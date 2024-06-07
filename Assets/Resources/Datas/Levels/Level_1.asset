@@ -14,8 +14,317 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     levelID: 1
-    gridWidth: 3
-    gridLength: 3
-    time: 30
-    busses: []
-    cells: []
+    gridWidth: 9
+    gridLength: 11
+    time: 226
+    buses:
+    - colorTypes: 5
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorTypes: 3
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorTypes: 4
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorTypes: 6
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorTypes: 2
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorTypes: 1
+      color: {r: 1, g: 1, b: 1, a: 1}
+    cells:
+    - position: {x: 0, y: 0}
+      gridTypes: 0
+      colorTypes: 5
+    - position: {x: 0, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 6}
+      gridTypes: 0
+      colorTypes: 5
+    - position: {x: 0, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 9}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 0, y: 10}
+      gridTypes: 0
+      colorTypes: 5
+    - position: {x: 1, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 9}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 1, y: 10}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 9}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 2, y: 10}
+      gridTypes: 0
+      colorTypes: 4
+    - position: {x: 3, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 9}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 3, y: 10}
+      gridTypes: 0
+      colorTypes: 3
+    - position: {x: 4, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 4, y: 9}
+      gridTypes: 0
+      colorTypes: 3
+    - position: {x: 4, y: 10}
+      gridTypes: 0
+      colorTypes: 3
+    - position: {x: 5, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 5, y: 9}
+      gridTypes: 0
+      colorTypes: 4
+    - position: {x: 5, y: 10}
+      gridTypes: 0
+      colorTypes: 4
+    - position: {x: 6, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 6, y: 8}
+      gridTypes: 0
+      colorTypes: 6
+    - position: {x: 6, y: 9}
+      gridTypes: 0
+      colorTypes: 6
+    - position: {x: 6, y: 10}
+      gridTypes: 0
+      colorTypes: 6
+    - position: {x: 7, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 7}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 7, y: 8}
+      gridTypes: 0
+      colorTypes: 2
+    - position: {x: 7, y: 9}
+      gridTypes: 0
+      colorTypes: 2
+    - position: {x: 7, y: 10}
+      gridTypes: 0
+      colorTypes: 2
+    - position: {x: 8, y: 0}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 1}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 2}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 3}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 4}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 5}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 6}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 7}
+      gridTypes: 0
+      colorTypes: 1
+    - position: {x: 8, y: 8}
+      gridTypes: 0
+      colorTypes: 0
+    - position: {x: 8, y: 9}
+      gridTypes: 0
+      colorTypes: 1
+    - position: {x: 8, y: 10}
+      gridTypes: 0
+      colorTypes: 1

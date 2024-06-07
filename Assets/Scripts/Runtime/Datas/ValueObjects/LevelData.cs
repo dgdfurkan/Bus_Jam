@@ -13,7 +13,7 @@ namespace Runtime.Datas.ValueObjects
         public byte gridLength;
         public float time;
         
-        public List<BusArea> busses;
+        public List<BusArea> buses;
         public List<CellArea> cells;
     }
 

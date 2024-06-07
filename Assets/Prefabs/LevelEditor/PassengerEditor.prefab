@@ -395,7 +395,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2293404376509840269}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 9000000, guid: ff5f6caf513d0d54185166277100859d, type: 2}
   m_Controller: {fileID: 9100000, guid: 7d68c61e78135454a82dbe8faf146232, type: 2}
   m_CullingMode: 0
@@ -609,6 +609,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878545847169845332}
   - component: {fileID: 1158334895899938808}
+  - component: {fileID: 2603350742100809775}
   m_Layer: 0
   m_Name: PassengerEditor
   m_TagString: Untagged
@@ -653,6 +654,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.8195236, z: 0.6118412}
   m_Center: {x: -3.211867e-17, y: 0.920082, z: 0.0100726485}
+--- !u!114 &2603350742100809775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4257948707137061558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: effc42e4e0334699984b2ec5c8db5de8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorType: 0
 --- !u!1 &4284651978026757996
 GameObject:
   m_ObjectHideFlags: 0

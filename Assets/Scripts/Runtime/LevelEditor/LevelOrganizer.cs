@@ -5,6 +5,7 @@ using System.Linq;
 using Runtime.Datas.UnityObjects;
 using Runtime.Datas.ValueObjects;
 using TMPro;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Runtime.LevelEditor
@@ -12,6 +13,10 @@ namespace Runtime.LevelEditor
     public class LevelOrganizer : MonoBehaviour
     {
         public static Func<int ,LevelData> OnGetLevelEditorData = delegate { return new LevelData(); };
+        public static Func<List<LevelData>> OnGetAllLevels = () => new List<LevelData>();
+        public static UnityAction OnCreateLevels = delegate { };
+        public static Func<int> OnGetTotalLevels  = () => 0;
+        public static Func<int> OnDetectMissingLevel  = () => 1;
         
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelParent;
@@ -26,26 +31,39 @@ namespace Runtime.LevelEditor
             _totalLevelCount = GetTotalLevelCount();
         }
 
-        private void OnEnable()
-        {
-            OnGetLevelEditorData += id => _datas[id];
-        }
-
-        private void OnDisable()
-        {
-            OnGetLevelEditorData -= id => _datas[id];
-        }
-
         private List<LevelData> GetDatas()
         {
             return _datas = new List<LevelData>(Resources.LoadAll<CD_Level>(PathOfData)
                 .Select(item => item.GetData())
-                .ToList());
+                .OrderBy(data => data.levelID).ToList());
         }
         
         private int GetTotalLevelCount()
         {
             return _datas.Count;
+        }
+
+        private void OnEnable()
+        {
+            OnGetLevelEditorData += GetLevelData;
+            OnGetAllLevels += GetDatas;
+            OnCreateLevels += CreateLevels;
+            OnGetTotalLevels += GetTotalLevelCount;
+            OnDetectMissingLevel += DetectMissingLevel;
+        }
+        
+        private LevelData GetLevelData(int id)
+        {
+            return _datas.FirstOrDefault(data => data.levelID == id);
+        }
+
+        private void OnDisable()
+        {
+            OnGetLevelEditorData -= GetLevelData;
+            OnGetAllLevels -= GetDatas;
+            OnCreateLevels -= CreateLevels;
+            OnGetTotalLevels -= GetTotalLevelCount;
+            OnDetectMissingLevel -= DetectMissingLevel;
         }
 
         private void Start()
@@ -55,14 +73,33 @@ namespace Runtime.LevelEditor
 
         private void CreateLevels()
         {
+            for(var i = 0; i < levelParent.childCount; i++)
+            {
+                Destroy(levelParent.GetChild(i).gameObject);
+            }
+            
+            _datas = GetDatas();
+            _totalLevelCount = GetTotalLevelCount();
             for (var i = 0; i < _totalLevelCount; i++)
             {
                 var level = Instantiate(levelPrefab, levelParent);
-                //level.GetComponent<CD_Level>().GetData(_datas[i]);
-                level.GetComponent<Button>().onClick.AddListener(() => LevelEditorManager.Instance.LoadLevel(_datas[i]));
+                var i1 = i;
+                level.GetComponent<Button>().onClick.AddListener(() => LevelEditorManager.Instance.LoadLevel(_datas[i1].levelID));
                 level.GetComponentsInChildren<TextMeshProUGUI>().First().text = $"Level {_datas[i].levelID}";
-                level.GetComponentsInChildren<TextMeshProUGUI>().Last().text = $""; // TODO: Level name or description
             }
+        }
+        
+        private int DetectMissingLevel()
+        {
+            if(_datas.Count == 0) return 1;
+            var maxLevel = _datas.Max(data => data.levelID);
+            if(maxLevel == 0) return 1;
+            var allLevels = Enumerable.Range(1, maxLevel).ToList();
+            var existingLevels = _datas.Select(data => data.levelID).ToList();
+
+            var missingLevels = allLevels.Except(existingLevels).ToList();
+
+            return missingLevels.Any() ? missingLevels.Min() : maxLevel + 1;
         }
     }
 }
