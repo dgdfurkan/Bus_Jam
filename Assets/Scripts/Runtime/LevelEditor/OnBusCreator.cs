@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using _Modules.ObjectPooling.Scripts.Enums;
+using _Modules.ObjectPooling.Scripts.Signals;
 using Runtime.Datas.ValueObjects;
 using Runtime.Enums;
 using UnityEngine;
@@ -8,14 +10,12 @@ namespace Runtime.LevelEditor
 {
     public class OnBusCreator
     {
-        private readonly GameObject _busPrefab;
         private readonly Transform _busParent;
         private readonly Queue<Vector3> _spawnPositions;
         private Dictionary<ColorTypes, Material> _materialDictionary;
 
-        public OnBusCreator(GameObject busPrefab, Transform busParent)
+        public OnBusCreator(Transform busParent)
         {
-            _busPrefab = busPrefab;
             _busParent = busParent;
             _spawnPositions = new Queue<Vector3>();
 
@@ -30,6 +30,8 @@ namespace Runtime.LevelEditor
         public void InitializeSpawnPositions(int count)
         {
             var startPosition = _busParent.position;
+            //var xOffset = PoolSignals.OnGetPrefabScale(PoolTypes.BusEditor).x;
+            //Debug.Log($"xOffset: {xOffset}");
             var offset = new Vector3(-6, 0, 0);
 
             for (var i = 0; i < count; i++)
@@ -43,24 +45,23 @@ namespace Runtime.LevelEditor
             var buses = new List<BusArea>();
             var colorCounts = new Dictionary<ColorTypes, int>();
 
-            foreach (var cell in cells.Where(cell => cell.colorTypes != ColorTypes.None))
+            foreach (var cell in cells.Where(cell => cell.passengerArea.colorType != ColorTypes.None))
             {
-                colorCounts.TryAdd(cell.colorTypes, 0);
+                colorCounts.TryAdd(cell.passengerArea.colorType, 0);
 
-                colorCounts[cell.colorTypes]++;
+                colorCounts[cell.passengerArea.colorType]++;
 
-                if (colorCounts[cell.colorTypes] < 3) continue;
+                if (colorCounts[cell.passengerArea.colorType] < 3) continue;
 
                 var busArea = new BusArea
                 {
-                    colorTypes = cell.colorTypes,
-                    color = Color.white
+                    colorType = cell.passengerArea.colorType
                 };
                 buses.Add(busArea);
 
-                CreateBus(busArea.colorTypes);
+                CreateBus(busArea.colorType);
 
-                colorCounts[cell.colorTypes] = 0;
+                colorCounts[cell.passengerArea.colorType] = 0;
             }
 
             return buses;
@@ -74,7 +75,8 @@ namespace Runtime.LevelEditor
             }
 
             var position = _spawnPositions.Dequeue();
-            var bus = UnityEngine.Object.Instantiate(_busPrefab, position, Quaternion.identity, _busParent);
+            var bus = PoolSignals.OnGetPoolableGameObject(PoolTypes.BusEditor, _busParent, position, Quaternion.identity);
+            //var bus = UnityEngine.Object.Instantiate(_busPrefab, position, Quaternion.identity, _busParent);
             var renderer = bus.GetComponentInChildren<Renderer>();
             renderer.material = _materialDictionary[colorType];
             bus.GetComponent<BusEditor>().Initialize(colorType);

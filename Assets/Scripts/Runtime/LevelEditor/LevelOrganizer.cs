@@ -17,6 +17,7 @@ namespace Runtime.LevelEditor
         public static UnityAction OnCreateLevels = delegate { };
         public static Func<int> OnGetTotalLevels  = () => 0;
         public static Func<int> OnDetectMissingLevel  = () => 1;
+        public static Func<int, int> OnDetectLowerLevel = delegate { return 1; };
         
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelParent;
@@ -49,7 +50,8 @@ namespace Runtime.LevelEditor
             OnGetAllLevels += GetDatas;
             OnCreateLevels += CreateLevels;
             OnGetTotalLevels += GetTotalLevelCount;
-            OnDetectMissingLevel += DetectMissingLevel;
+            OnDetectMissingLevel += DetectMinimumMissingLevelID;
+            OnDetectLowerLevel += DetectLowerLevelID;
         }
         
         private LevelData GetLevelData(int id)
@@ -63,7 +65,8 @@ namespace Runtime.LevelEditor
             OnGetAllLevels -= GetDatas;
             OnCreateLevels -= CreateLevels;
             OnGetTotalLevels -= GetTotalLevelCount;
-            OnDetectMissingLevel -= DetectMissingLevel;
+            OnDetectMissingLevel -= DetectMinimumMissingLevelID;
+            OnDetectLowerLevel -= DetectLowerLevelID;
         }
 
         private void Start()
@@ -89,7 +92,7 @@ namespace Runtime.LevelEditor
             }
         }
         
-        private int DetectMissingLevel()
+        private int DetectMinimumMissingLevelID()
         {
             if(_datas.Count == 0) return 1;
             var maxLevel = _datas.Max(data => data.levelID);
@@ -100,6 +103,13 @@ namespace Runtime.LevelEditor
             var missingLevels = allLevels.Except(existingLevels).ToList();
 
             return missingLevels.Any() ? missingLevels.Min() : maxLevel + 1;
+        }
+
+        private int DetectLowerLevelID(int levelId)
+        {
+            var lowerLevels = _datas.Where(data => data.levelID < levelId);
+            var levelDatas = lowerLevels.ToList();
+            return levelDatas.Any() ? levelDatas.Max(data => data.levelID) : 1;
         }
     }
 }

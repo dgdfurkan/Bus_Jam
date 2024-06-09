@@ -31,8 +31,9 @@ namespace Runtime.Managers
                     var cell = new CellArea
                     {
                         position = new Vector2Int(x + xOffset, z),
-                        gridTypes = GridTypes.Normal,
-                        colorTypes = ColorTypes.None
+                        gridType = GridTypes.Normal,
+                        //colorTypes = ColorTypes.None,
+                        passengerArea = new PassengerArea{colorType = ColorTypes.None}
                     };
                     _cells.Add(cell);
                 }

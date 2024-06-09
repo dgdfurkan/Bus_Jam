@@ -20,16 +20,22 @@ namespace Runtime.Datas.ValueObjects
     [Serializable]
     public class BusArea
     {
-        public ColorTypes colorTypes;
-        public Color color;
+        public ColorTypes colorType;
+    }
+    
+    [Serializable]
+    public class PassengerArea
+    {
+        public ColorTypes colorType;
     }
 
     [Serializable]
     public class CellArea
     {
         public Vector2Int position;
-        public GridTypes gridTypes;
-        public ColorTypes colorTypes;
+        public GridTypes gridType;
+        //public ColorTypes colorTypes;
+        public PassengerArea passengerArea;
     }
 }
 

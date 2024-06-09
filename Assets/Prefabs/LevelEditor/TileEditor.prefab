@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5877340799904657555}
   - component: {fileID: 4251742931207917522}
   m_Layer: 0
-  m_Name: Tile
+  m_Name: TileEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,3 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40e4be96a254419aa5f7620b9a308cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellData:
+    position: {x: 0, y: 0}
+    gridType: 0
+    passengerArea:
+      colorType: 0

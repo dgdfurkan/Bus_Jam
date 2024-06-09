@@ -50,16 +50,16 @@ namespace Runtime.LevelEditor
             switch (valueType)
             {
                 case ValueType.LevelID:
-                    value = LevelEditorManager.Instance.levelID;
+                    value = LevelEditorManager.Instance.levelIDEditor;
                     break;
                 case ValueType.GridWidth:
-                    value = LevelEditorManager.Instance.gridWidth;
+                    value = LevelEditorManager.Instance.gridWidthEditor;
                     break;
                 case ValueType.GridLength:
-                    value = LevelEditorManager.Instance.gridLength;
+                    value = LevelEditorManager.Instance.gridLengthEditor;
                     break;
                 case ValueType.Time:
-                    value = LevelEditorManager.Instance.time;
+                    value = LevelEditorManager.Instance.timeEditor;
                     break;
                 default:
                     break;
@@ -101,20 +101,20 @@ namespace Runtime.LevelEditor
             switch (valueType)
             {
                 case ValueType.LevelID:
-                    LevelEditorManager.Instance.levelID = (int)value;
+                    LevelEditorManager.Instance.levelIDEditor = (int)value;
                     break;
                 case ValueType.GridWidth:
-                    LevelEditorManager.Instance.gridWidth = (byte)value;
-                    LevelEditorManager.Instance.CreateGrid((byte)value, LevelEditorManager.Instance.gridLength
-                        ,LevelOrganizer.OnGetLevelEditorData.Invoke(LevelEditorManager.Instance.levelID));
+                    LevelEditorManager.Instance.gridWidthEditor = (byte)value;
+                    LevelEditorManager.Instance.CreateGrid((byte)value, LevelEditorManager.Instance.gridLengthEditor
+                        ,LevelOrganizer.OnGetLevelEditorData.Invoke(LevelEditorManager.Instance.levelIDEditor));
                     break;
                 case ValueType.GridLength:
-                    LevelEditorManager.Instance.gridLength = (byte)value;
-                    LevelEditorManager.Instance.CreateGrid(LevelEditorManager.Instance.gridWidth, (byte)value
-                        ,LevelOrganizer.OnGetLevelEditorData.Invoke(LevelEditorManager.Instance.levelID));
+                    LevelEditorManager.Instance.gridLengthEditor = (byte)value;
+                    LevelEditorManager.Instance.CreateGrid(LevelEditorManager.Instance.gridWidthEditor, (byte)value
+                        ,LevelOrganizer.OnGetLevelEditorData.Invoke(LevelEditorManager.Instance.levelIDEditor));
                     break;
                 case ValueType.Time:
-                    LevelEditorManager.Instance.time = value;
+                    LevelEditorManager.Instance.timeEditor = value;
                     break;
                 default:
                     break;

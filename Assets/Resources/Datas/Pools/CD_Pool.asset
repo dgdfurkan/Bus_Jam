@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9042d4401fba4daf84a0f38249d1d068, type: 3}
+  m_Name: CD_Pool
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  PoolList:
+    m_Keys: 030000000500000004000000000000000200000001000000
+    m_Values:
+    - amount: 150
+      prefab: {fileID: 4257948707137061558, guid: 87232af469c8d17469a89eff5006f3a4,
+        type: 3}
+      type: 3
+    - amount: 225
+      prefab: {fileID: 9204641661312256610, guid: 56bfdc245bd22af42a64998c4486df1f,
+        type: 3}
+      type: 5
+    - amount: 20
+      prefab: {fileID: 5406226118432775735, guid: 266f82c1722c17049b080cfb0411dc4a,
+        type: 3}
+      type: 4
+    - amount: 2
+      prefab: {fileID: 9204641661312256610, guid: 56bfdc245bd22af42a64998c4486df1f,
+        type: 3}
+      type: 0
+    - amount: 2
+      prefab: {fileID: 5406226118432775735, guid: 266f82c1722c17049b080cfb0411dc4a,
+        type: 3}
+      type: 2
+    - amount: 2
+      prefab: {fileID: 4257948707137061558, guid: 87232af469c8d17469a89eff5006f3a4,
+        type: 3}
+      type: 1

@@ -8,6 +8,9 @@
         Yellow,
         Green,
         Purple,
-        Orange
+        Orange,
+        White,
+        Pink,
+        Turquoise,
     }
 }
