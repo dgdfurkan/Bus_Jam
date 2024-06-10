@@ -2,7 +2,7 @@
 using Runtime.Datas.ValueObjects;
 using UnityEngine;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public static class LevelDataComparer
     {

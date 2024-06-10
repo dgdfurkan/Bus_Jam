@@ -1,7 +1,7 @@
 ﻿using Runtime.Enums;
 using UnityEngine;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public class BusEditor : MonoBehaviour
     {

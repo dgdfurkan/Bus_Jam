@@ -2,7 +2,7 @@
 using _Modules.ObjectPooling.Scripts.Enums;
 using _Modules.ObjectPooling.Scripts.Signals;
 using DG.Tweening;
-using Runtime.LevelEditor;
+using Runtime.Managers;
 using TMPro;
 using UnityEngine;
 
@@ -25,7 +25,7 @@ namespace Runtime.Extentions
         public static void ClearChildren(this Transform transform, PoolTypes type = default)
         {
             transform.Cast<Transform>().ToList().ForEach(child 
-                => PoolSignals.OnSetPooledGameObject?.Invoke(child.gameObject, type));
+                => PoolSignals.Instance.OnSetPooledGameObject?.Invoke(child.gameObject, type));
         }
         
         public static void SetColliderPassengerEditor(this GameObject gameObject, bool value)

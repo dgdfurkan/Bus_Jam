@@ -18,7 +18,7 @@ public class OnLevelLoaderCommand : ICommand
         //     true);
         
         Debug.Log($"Level {levelIndex + 1} loaded.");
+        CoreGameSignals.OnLoadLevelInitialize.Invoke(levelIndex);
         
-        //CoreGameSignals.OnGridInitialize.Invoke(CoreGameSignals.OnGetLevelData.Invoke(levelIndex).cells, _levelHolder);
     }
 }

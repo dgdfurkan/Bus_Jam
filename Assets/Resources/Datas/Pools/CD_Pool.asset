@@ -36,15 +36,15 @@ MonoBehaviour:
       prefab: {fileID: 5406226118432775735, guid: 266f82c1722c17049b080cfb0411dc4a,
         type: 3}
       type: 4
-    - amount: 2
-      prefab: {fileID: 9204641661312256610, guid: 56bfdc245bd22af42a64998c4486df1f,
+    - amount: 225
+      prefab: {fileID: 9204641661312256610, guid: 0704aced3399ac340b2f6adc214f41d6,
         type: 3}
       type: 0
-    - amount: 2
-      prefab: {fileID: 5406226118432775735, guid: 266f82c1722c17049b080cfb0411dc4a,
+    - amount: 20
+      prefab: {fileID: 5406226118432775735, guid: c6f13c7e435f02745b79ce4c7a7d7f95,
         type: 3}
       type: 2
-    - amount: 2
-      prefab: {fileID: 4257948707137061558, guid: 87232af469c8d17469a89eff5006f3a4,
+    - amount: 150
+      prefab: {fileID: 4257948707137061558, guid: d4fb22a80f2a27f409eebaa4ba58e20d,
         type: 3}
       type: 1

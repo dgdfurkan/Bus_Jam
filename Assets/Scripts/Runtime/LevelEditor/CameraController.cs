@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public class CameraController : MonoBehaviour
     {

@@ -6,7 +6,7 @@ using Runtime.Enums;
 using Runtime.Extentions;
 using UnityEngine;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public class PassengerEditorManager: MonoBehaviour
     {
@@ -60,7 +60,7 @@ namespace Runtime.LevelEditor
             if (_clone is not null)
             {
                 var mousePos = GetMouseWorldPos();
-                _clone.transform.position = new Vector3(mousePos.x, _clone.transform.position.y, mousePos.z);
+                _clone.transform.position = new Vector3(mousePos.x, _clone.transform.position.y, mousePos.z + 0.2f);
             }
 
             if (Input.GetMouseButtonDown(0))
@@ -106,12 +106,12 @@ namespace Runtime.LevelEditor
                     {
                         if (child.position != tileEditor.transform.position) continue;
                         child.gameObject.SetColliderPassengerEditor(true);
-                        PoolSignals.OnSetPooledGameObject?.Invoke(child.gameObject, PoolTypes.PassengerEditor);
+                        PoolSignals.Instance.OnSetPooledGameObject?.Invoke(child.gameObject, PoolTypes.PassengerEditor);
                         //Destroy(child.gameObject);
                         break;
                     }
                     
-                    var newPassenger = PoolSignals.OnGetPoolableGameObject?.Invoke(PoolTypes.PassengerEditor, passengerParent, tileEditor.transform.position, Quaternion.identity);
+                    var newPassenger = PoolSignals.Instance.OnGetPoolableGameObject?.Invoke(PoolTypes.PassengerEditor, passengerParent, tileEditor.transform.position, Quaternion.identity);
                     //var newPassenger = Instantiate(selectedPassengerEditor.gameObject, tileEditor.transform.position, Quaternion.identity);
                     newPassenger?.transform.SetParent(passengerParent.transform);
                     tileEditor.cellData.passengerArea.colorType = selectedPassengerEditor.colorType;

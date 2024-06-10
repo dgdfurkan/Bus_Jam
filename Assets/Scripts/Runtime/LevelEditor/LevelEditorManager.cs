@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Modules.ObjectPooling.Scripts.Enums;
+using Runtime.Commands;
 using Runtime.Datas.UnityObjects;
 using Runtime.Datas.ValueObjects;
 using Runtime.Enums;
@@ -11,10 +11,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Runtime.Extentions;
-using Sirenix.OdinInspector;
+using Runtime.Signals;
 using Sirenix.Utilities;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public class LevelEditorManager : MonoBehaviour
     {
@@ -57,6 +57,8 @@ namespace Runtime.LevelEditor
         
         private OnGridCreator _onGridCreator;
         private OnBusCreator _onBusCreator;
+        private OnGridDestroyer _onGridDestroyer;
+        private OnBusDestroyer _onBusDestroyer;
 
         private Dictionary<ColorTypes, int> _currentColorCounts;
         
@@ -72,8 +74,10 @@ namespace Runtime.LevelEditor
         private void Init()
         {
             _colorData = GetColorData();
-            _onGridCreator = new OnGridCreator(gridParent);
+            _onGridCreator = new OnGridCreator(gridParent, passengerParent);
             _onBusCreator = new OnBusCreator(busParent);
+            _onGridDestroyer = new OnGridDestroyer(gridParent, passengerParent);
+            _onBusDestroyer = new OnBusDestroyer(busParent);
         }
         
         private CD_Color GetColorData()
@@ -81,23 +85,35 @@ namespace Runtime.LevelEditor
             return Resources.Load<CD_Color>("Datas/Colors/CD_Color");
         }
 
+        private void OnEnable()
+        {
+            CoreGameSignals.OnGetTotalPassengerCount += GetTotalPassengerCount;
+        }
+
+        private int GetTotalPassengerCount()
+        {
+            return cellsEditor.Count(cell => cell.passengerArea.colorType != ColorTypes.None);
+        }
+        
+        private void OnDisable()
+        {
+            CoreGameSignals.OnGetTotalPassengerCount -= GetTotalPassengerCount;
+        }
+        
         private void Start()
         {
             _colorObjectList = new Dictionary<ColorTypes, Material>();
-
-            // foreach (var color in _colorData.ColorList)
-            // {
-            //     _colorObjectList.TryAdd(color.Key, color.Value.material);
-            // }
             
             _colorData.ColorList.ForEach(color => _colorObjectList.TryAdd(color.Key, color.Value.material));
     
             _onGridCreator.SetMaterialDictionary(_colorObjectList);
             _onBusCreator.SetMaterialDictionary(_colorObjectList);
             
-            if (LevelOrganizer.OnGetLevelEditorData?.Invoke(1) is not null)
-                LoadLevel(1);
-            else CreateNewLevel();
+            // if (LevelOrganizer.OnGetLevelEditorData?.Invoke(1) is not null)
+            //     LoadLevel(1);
+            // else CreateNewLevel();
+            
+            LoadLevel(LevelOrganizer.OnDetectMaksimumLevel.Invoke());
         }
 
         public void CreateNewLevel()
@@ -131,23 +147,22 @@ namespace Runtime.LevelEditor
         public void LoadLevel(int id)
         {
             var data = LevelOrganizer.OnGetLevelEditorData?.Invoke(id);
-            if (data != null)
+            if (data is null)
             {
-                levelIDEditor = data.levelID;
-                gridWidthEditor = data.gridWidth;
-                gridLengthEditor = data.gridLength;
-                timeEditor = data.time;
-                busesEditor = new List<BusArea>(data.buses);
-                cellsEditor = new List<CellArea>(data.cells);
-                CreateGrid(gridWidthEditor, gridLengthEditor, data);
-                UpdateLevelUI(levelIDEditor, $"Level {levelIDEditor} loaded!");
+                CreateNewLevel();
+                return;
+            }
+
+            levelIDEditor = data.levelID;
+            gridWidthEditor = data.gridWidth;
+            gridLengthEditor = data.gridLength;
+            timeEditor = data.time;
+            busesEditor = new List<BusArea>(data.buses);
+            cellsEditor = new List<CellArea>(data.cells);
+            CreateGrid(gridWidthEditor, gridLengthEditor, data);
+            UpdateLevelUI(levelIDEditor, $"Level {levelIDEditor} loaded!");
                 
-                _currentLevelData = data;
-            }
-            else
-            {
-                Debug.LogWarning($"Level not found!");
-            }
+            _currentLevelData = data;
         }
 
         public void DeleteLevel()
@@ -275,24 +290,24 @@ namespace Runtime.LevelEditor
             
             CreateGrid(gridWidthEditor, gridLengthEditor, levelData);
         }
-
-        public int GetTotalPassengerCount()
-        {
-            return cellsEditor.Count(cell => cell.passengerArea.colorType != ColorTypes.None);
-        }
         
         private void ClearGrid()
         {
-            gridParent.ClearChildren(PoolTypes.TileEditor);
+            _onGridDestroyer.DestroyGridEditor();
+            _onGridDestroyer.DestroyPassengerEditor();
             
-            passengerParent.ClearChildren(PoolTypes.PassengerEditor);
+            //gridParent.ClearChildren(PoolTypes.TileEditor);
+            
+            //passengerParent.ClearChildren(PoolTypes.PassengerEditor);
             
             cellsEditor.Clear();
         }   
         
         private void ClearBuses()
         {
-            busParent.ClearChildren( PoolTypes.BusEditor);
+            _onBusDestroyer.DestroyBusEditor();
+            
+            //busParent.ClearChildren( PoolTypes.BusEditor);
             
             busesEditor.Clear();
             

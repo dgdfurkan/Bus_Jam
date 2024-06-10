@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public class LevelOrganizer : MonoBehaviour
     {
@@ -17,10 +17,12 @@ namespace Runtime.LevelEditor
         public static UnityAction OnCreateLevels = delegate { };
         public static Func<int> OnGetTotalLevels  = () => 0;
         public static Func<int> OnDetectMissingLevel  = () => 1;
+        public static Func<int> OnDetectMaksimumLevel  = () => 1;
         public static Func<int, int> OnDetectLowerLevel = delegate { return 1; };
         
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private Transform levelParent;
+        [SerializeField] private ScrollRect scrollRect;
         
         private const string PathOfData = "Datas/Levels";
         private List<LevelData> _datas = new List<LevelData>();
@@ -46,32 +48,18 @@ namespace Runtime.LevelEditor
 
         private void OnEnable()
         {
-            OnGetLevelEditorData += GetLevelData;
             OnGetAllLevels += GetDatas;
-            OnCreateLevels += CreateLevels;
             OnGetTotalLevels += GetTotalLevelCount;
+            OnGetLevelEditorData += GetLevelData;
+            OnCreateLevels += CreateLevels;
             OnDetectMissingLevel += DetectMinimumMissingLevelID;
+            OnDetectMaksimumLevel += DetectMaksimumLevel;
             OnDetectLowerLevel += DetectLowerLevelID;
         }
         
         private LevelData GetLevelData(int id)
         {
             return _datas.FirstOrDefault(data => data.levelID == id);
-        }
-
-        private void OnDisable()
-        {
-            OnGetLevelEditorData -= GetLevelData;
-            OnGetAllLevels -= GetDatas;
-            OnCreateLevels -= CreateLevels;
-            OnGetTotalLevels -= GetTotalLevelCount;
-            OnDetectMissingLevel -= DetectMinimumMissingLevelID;
-            OnDetectLowerLevel -= DetectLowerLevelID;
-        }
-
-        private void Start()
-        {
-            CreateLevels();
         }
 
         private void CreateLevels()
@@ -90,6 +78,7 @@ namespace Runtime.LevelEditor
                 level.GetComponent<Button>().onClick.AddListener(() => LevelEditorManager.Instance.LoadLevel(_datas[i1].levelID));
                 level.GetComponentsInChildren<TextMeshProUGUI>().First().text = $"Level {_datas[i].levelID}";
             }
+            scrollRect.verticalNormalizedPosition = 0;
         }
         
         private int DetectMinimumMissingLevelID()
@@ -104,12 +93,33 @@ namespace Runtime.LevelEditor
 
             return missingLevels.Any() ? missingLevels.Min() : maxLevel + 1;
         }
+        
+        private int DetectMaksimumLevel()
+        {
+            return _datas.Any() ? _datas.Max(data => data.levelID) : 1;
+        }
 
         private int DetectLowerLevelID(int levelId)
         {
             var lowerLevels = _datas.Where(data => data.levelID < levelId);
             var levelDatas = lowerLevels.ToList();
             return levelDatas.Any() ? levelDatas.Max(data => data.levelID) : 1;
+        }
+
+        private void OnDisable()
+        {
+            OnGetLevelEditorData -= GetLevelData;
+            OnGetTotalLevels -= GetTotalLevelCount;
+            OnGetAllLevels -= GetDatas;
+            OnCreateLevels -= CreateLevels;
+            OnDetectMissingLevel -= DetectMinimumMissingLevelID;
+            OnDetectMaksimumLevel -= DetectMaksimumLevel;
+            OnDetectLowerLevel -= DetectLowerLevelID;
+        }
+
+        private void Start()
+        {
+            CreateLevels();
         }
     }
 }

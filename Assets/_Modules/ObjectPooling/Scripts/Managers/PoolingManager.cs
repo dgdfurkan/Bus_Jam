@@ -11,17 +11,9 @@ namespace _Modules.ObjectPooling.Scripts.Managers
     {
         #region Self Variables
 
-        #region Serialized Variables
-        
-        [SerializeField] private Transform poolParent;
-        [SerializeField] private GameObject hapYutan;
-
-        #endregion
-
         #region Private Variables
 
         private CD_Pool _data;
-        [ShowInInspector]
         private Dictionary<PoolTypes, Queue<GameObject>> _poolableObjectList;
 
         #endregion
@@ -42,14 +34,15 @@ namespace _Modules.ObjectPooling.Scripts.Managers
         
         private void OnEnable()
         {
+            Setup();
             SubscribeEvents();
         }
 
         private void SubscribeEvents()
         {
-            PoolSignals.OnGetPoolableGameObject += OnGetPoolableGameObject;
-            PoolSignals.OnSetPooledGameObject += OnSetPooledGameObject;
-            PoolSignals.OnGetPrefabScale += OnGetPrefabScale;
+            PoolSignals.Instance.OnGetPoolableGameObject += OnGetPoolableGameObject;
+            PoolSignals.Instance.OnSetPooledGameObject += OnSetPooledGameObject;
+            PoolSignals.Instance.OnGetPrefabScale += OnGetPrefabScale;
         }
 
         private GameObject OnGetPoolableGameObject(PoolTypes type, Transform parent = null, Vector3 position = default
@@ -88,9 +81,9 @@ namespace _Modules.ObjectPooling.Scripts.Managers
                 return;
             }
             
-            poolObject.transform.parent = poolParent.transform.Find(type.ToString()) 
-                                          ?? new GameObject(type.ToString()) { transform = { parent = poolParent.transform } }.transform;            
-            //poolObject.transform.parent = poolParent.transform;
+            poolObject.transform.parent = transform.Find(type.ToString()) 
+                                          ?? new GameObject(type.ToString()) { transform = { parent = transform } }.transform;            
+            //poolObject.transform.parent = transform;
             //poolObject.transform.localScale = Vector3.one;
             poolObject.transform.localPosition = Vector3.zero;
             poolObject.transform.localEulerAngles = Vector3.zero;
@@ -121,9 +114,9 @@ namespace _Modules.ObjectPooling.Scripts.Managers
         
         private void UnsubscribeEvents()
         {
-            PoolSignals.OnGetPoolableGameObject -= OnGetPoolableGameObject;
-            PoolSignals.OnSetPooledGameObject -= OnSetPooledGameObject;
-            PoolSignals.OnGetPrefabScale -= OnGetPrefabScale;
+            PoolSignals.Instance.OnGetPoolableGameObject -= OnGetPoolableGameObject;
+            PoolSignals.Instance.OnSetPooledGameObject -= OnSetPooledGameObject;
+            PoolSignals.Instance.OnGetPrefabScale -= OnGetPrefabScale;
         }
 
         private void OnDisable()
@@ -133,9 +126,10 @@ namespace _Modules.ObjectPooling.Scripts.Managers
         
         #endregion
 
+
         private void Start()
         {
-            Setup();
+            //Setup();
         }
 
         private void Setup()
@@ -154,9 +148,9 @@ namespace _Modules.ObjectPooling.Scripts.Managers
 
                 for (var i = 0; i < pool.Value.amount; i++)
                 {
-                    var go = Instantiate(pool.Value.prefab, poolParent, true);
-                    go.transform.parent = poolParent.transform.Find(pool.Key.ToString()) 
-                                                  ?? new GameObject(pool.Key.ToString()) { transform = { parent = poolParent.transform } }.transform;
+                    var go = Instantiate(pool.Value.prefab, transform, true);
+                    go.transform.parent = transform.Find(pool.Key.ToString()) 
+                                                  ?? new GameObject(pool.Key.ToString()) { transform = { parent = transform } }.transform;
                     go.SetActive(false);
                     pool.Value.type = pool.Key;
 

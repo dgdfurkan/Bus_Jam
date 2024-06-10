@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Runtime.Extentions;
 
-namespace Runtime.LevelEditor
+namespace Runtime.Managers
 {
     public enum ValueType
     {
