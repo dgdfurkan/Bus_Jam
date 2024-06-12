@@ -16,6 +16,7 @@ namespace Runtime.Commands
         private readonly Transform _busHolder;
         private readonly Queue<Vector3> _spawnPositions;
         private Dictionary<ColorTypes, Material> _materialDictionary;
+        private Queue<BusController> _buses = new Queue<BusController>();
 
         public OnBusCreator(Transform busHolder)
         {
@@ -30,7 +31,7 @@ namespace Runtime.Commands
             _materialDictionary = materialDictionary;
         }
 
-        public void InitializeSpawnPositions(int count)
+        private void InitializeSpawnPositions(int count)
         {
             var startPosition = _busHolder.position;
             //var xOffset = PoolSignals.OnGetPrefabScale(PoolTypes.BusEditor).x;
@@ -73,9 +74,6 @@ namespace Runtime.Commands
         public void CreateBusesFunc(int levelID)
         {
             var levelData = CoreGameSignals.OnGetLevelData.Invoke(levelID);
-            //var buses = CreateBuses(levelData.cells);
-            
-            var buses = new List<BusArea>();
             var colorCounts = new Dictionary<ColorTypes, int>();
 
             foreach (var cell in levelData.cells.Where(cell => cell.passengerArea.colorType != ColorTypes.None))
@@ -90,10 +88,7 @@ namespace Runtime.Commands
                 {
                     colorType = cell.passengerArea.colorType
                 };
-                buses.Add(busArea);
-
                 CreateBus(busArea.colorType);
-
                 colorCounts[cell.passengerArea.colorType] = 0;
             }
         }
@@ -107,7 +102,6 @@ namespace Runtime.Commands
 
             var position = _spawnPositions.Dequeue();
             var bus = PoolSignals.Instance.OnGetPoolableGameObject(PoolTypes.BusEditor, _busHolder, position, Quaternion.identity);
-            //var bus = UnityEngine.Object.Instantiate(_busPrefab, position, Quaternion.identity, _busParent);
             var renderer = bus.GetComponentInChildren<Renderer>();
             renderer.material = _materialDictionary[colorType];
             bus.GetComponent<BusEditor>().Initialize(colorType);
@@ -122,15 +116,20 @@ namespace Runtime.Commands
 
             var position = _spawnPositions.Dequeue();
             var bus = PoolSignals.Instance.OnGetPoolableGameObject(PoolTypes.Bus, _busHolder, position, Quaternion.identity);
-            //var bus = UnityEngine.Object.Instantiate(_busPrefab, position, Quaternion.identity, _busParent);
             var renderer = bus.GetComponentInChildren<Renderer>();
             renderer.material = _materialDictionary[colorType];
             bus.GetComponent<BusController>().Initialize(new BusArea{colorType = colorType});
+            _buses.Enqueue(bus.GetComponent<BusController>());
         }
         
         public void ResetSpawnPositions()
         {
             _spawnPositions.Clear();
+        }
+        
+        public Queue<BusController> GetCreatedBuses()
+        {
+            return _buses;
         }
     }
 }

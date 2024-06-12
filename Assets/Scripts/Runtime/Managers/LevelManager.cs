@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Runtime.Commands;
+using Runtime.Controllers.Objects;
 using Runtime.Datas.UnityObjects;
 using Runtime.Datas.ValueObjects;
 using Runtime.Enums;
@@ -30,6 +32,13 @@ namespace Runtime.Managers
         [SerializeField] private Transform passengerHolder;
         [SerializeField] private Transform busHolder;
 
+        [Header("List")]
+        [Space(20)]
+        [SerializeField] private List<BusStopController> busStops;
+        [SerializeField] private List<PassengerController> passengers;
+        [SerializeField] private List<TileController> tiles;
+        [ShowInInspector] internal Queue<BusController> buses = new Queue<BusController>();
+        
         #endregion
 
         #region Private Variables
@@ -95,6 +104,7 @@ namespace Runtime.Managers
         {
             return _datas = new List<LevelData>(Resources.LoadAll<CD_Level>(PathOfData)
                 .Select(item => item.GetData())
+                .OrderBy(data => data.levelID)
                 .ToList());
         }
         
@@ -119,7 +129,7 @@ namespace Runtime.Managers
         {
             SubscribeEvents();
             
-            _currentLevel = GetLevelID();
+            //_currentLevel = GetLevelID();
         }
 
         private void SubscribeEvents()
@@ -137,9 +147,13 @@ namespace Runtime.Managers
             
             CoreGameSignals.OnGetLevelID += GetLevelID;
             CoreGameSignals.OnGetLevelData += ReturnGetLevelData;
+            CoreGameSignals.OnGetCurrentLevelData += ReturnGetCurrentLevelData;
             CoreGameSignals.OnNextLevel += OnNextLevel;
             CoreGameSignals.OnRestartLevel += OnRestartLevel;
             CoreGameSignals.OnGetTotalPassengerCount += GetTotalPassengerCount;
+            CoreGameSignals.OnBusFull += OnBusFull;
+            CoreGameSignals.OnUpdateCellArea += OnUpdateCellArea;
+            CoreGameSignals.OnSendAvailableBusStop += OnSendAvailableBusStop;
         }
     
         private int GetLevelID()
@@ -152,31 +166,96 @@ namespace Runtime.Managers
         {
             return _datas[levelIndex];
         }
+        
+        private LevelData ReturnGetCurrentLevelData()
+        {
+            return _datas[_currentLevel];
+        }
     
         [ButtonGroup("Level")]
         private void OnNextLevel()
         {
             _currentLevel++;
             _currentLevel %= _totalLevelCount;
-            SaveSignals.OnSaveGameData?.Invoke();
+            //SaveSignals.OnSaveGameData?.Invoke();
             CoreGameSignals.OnClearActiveLevel?.Invoke();
             CoreGameSignals.OnReset?.Invoke();
-            CoreGameSignals.OnLevelInitialize?.Invoke(GetLevelID());
+            CoreGameSignals.OnLevelInitialize?.Invoke(_currentLevel);
+            GetCreatedObjects();
         }
     
         [ButtonGroup("Level")]
         private void OnRestartLevel()
         {
-            SaveSignals.OnSaveGameData?.Invoke();
+            //SaveSignals.OnSaveGameData?.Invoke();
             CoreGameSignals.OnClearActiveLevel?.Invoke();
             CoreGameSignals.OnReset?.Invoke();
-            CoreGameSignals.OnLevelInitialize?.Invoke(GetLevelID());
+            CoreGameSignals.OnLevelInitialize?.Invoke(_currentLevel);
+            GetCreatedObjects();
         }
         
         private int GetTotalPassengerCount()
         {
             var activeLevelData = _datas[_currentLevel];
             return activeLevelData.cells.Count(cell => cell.passengerArea.colorType != ColorTypes.None);
+        }
+
+        private void GetCreatedObjects()
+        {
+            passengers.Clear();
+            tiles.Clear();
+            //buses.Clear();
+            passengers = _gridCreator.GetCreatedPassengers();
+            tiles = _gridCreator.GetCreatedTiles();
+            buses = _busCreator.GetCreatedBuses();
+            CoreGameSignals.OnUpdateBusColor?.Invoke(buses.Peek().Data);
+            //busStops.ForEach(bus => bus.GetBusStopData());
+        }
+        
+        private void OnBusFull()
+        {
+            var busesArray = buses.ToArray();
+            for (var i = 1; i < busesArray.Length; i++)
+            {
+                var previousBusPositionX = busesArray[i - 1].transform.position.x;
+                busesArray[i].Move(previousBusPositionX);
+            }
+            
+            buses.Dequeue();
+            CoreGameSignals.OnUpdateBusColor?.Invoke(new BusArea{colorType = ColorTypes.None});
+
+            if (buses.Count == 0)
+            {
+                print("No Bus Left");
+                DOVirtual.DelayedCall(0.5f, () =>
+                {
+                    CoreGameSignals.OnLevelSuccessful?.Invoke();
+                });
+                return;
+            }
+            DOVirtual.DelayedCall(0.4f, CheckBusStop).OnComplete(() =>
+            {
+                DOVirtual.DelayedCall(0.1f, CheckBusStop);
+            });
+        }
+
+        private void CheckBusStop()
+        {
+            CoreGameSignals.OnUpdateBusColor?.Invoke(buses.Peek().Data);
+            busStops.Where(bus => bus.isOccupied && bus.Data.colorType == buses.Peek().Data.colorType)
+                .ToList()
+                .ForEach(bus => bus.PassengerController.MoveBus());
+        }
+
+        private void OnUpdateCellArea(CellArea cellArea)
+        {
+            passengers.ForEach(passenger => passenger.SetOutline());
+        }
+        
+        private BusStopController OnSendAvailableBusStop()
+        {
+            var availableBusStop = busStops.Find(stop => !stop.isOccupied);
+            return availableBusStop;
         }
 
         private void UnsubscribeEvents()
@@ -193,9 +272,12 @@ namespace Runtime.Managers
             CoreGameSignals.OnClearActiveLevel -= _busDestroyer.DestroyBusFunc;
             
             CoreGameSignals.OnGetLevelData -= ReturnGetLevelData;
+            CoreGameSignals.OnGetCurrentLevelData -= ReturnGetCurrentLevelData;
             CoreGameSignals.OnNextLevel -= OnNextLevel;
             CoreGameSignals.OnRestartLevel -= OnRestartLevel;
             CoreGameSignals.OnGetTotalPassengerCount -= GetTotalPassengerCount;
+            CoreGameSignals.OnUpdateCellArea -= OnUpdateCellArea;
+            CoreGameSignals.OnSendAvailableBusStop = OnSendAvailableBusStop;
         }
         
         private void OnDisable()
@@ -209,6 +291,7 @@ namespace Runtime.Managers
         {
             print($"Level Count: {ReturnGetLevelData(0).levelID}");
             CoreGameSignals.OnLevelInitialize?.Invoke(GetLevelID());
+            GetCreatedObjects();
             //CoreUISignals.Instance.onOpenPanel?.Invoke(UIPanelTypes.Start, 1);
         }
     }

@@ -19,6 +19,8 @@ namespace Runtime.Commands
         private readonly Dictionary<ColorTypes, int> _colorCounts;
         private Dictionary<ColorTypes, Material> _materialDictionary;
         private const float GridSpacing = 0.1f;
+        private List<PassengerController> _passengers = new List<PassengerController>();
+        private List<TileController> _tiles = new List<TileController>();
 
         public OnGridCreator(Transform gridHolder, Transform passengerHolder)
         {
@@ -81,6 +83,9 @@ namespace Runtime.Commands
         
         public void CreateGridFunc(int levelID)
         {
+            _tiles.Clear();
+            _passengers.Clear();
+            
             var width = CoreGameSignals.OnGetLevelData?.Invoke(levelID).gridWidth;
             var length = CoreGameSignals.OnGetLevelData?.Invoke(levelID).gridWidth;
             var cellData = CoreGameSignals.OnGetLevelData?.Invoke(levelID).cells;
@@ -95,7 +100,8 @@ namespace Runtime.Commands
                     var position = new Vector3((float)(x * (1 + GridSpacing) + xOffset), 0, -z * (1 + GridSpacing) - 0.5f);
                     var tile = PoolSignals.Instance.OnGetPoolableGameObject?.Invoke(PoolTypes.Tile, _gridHolder, position, Quaternion.identity);
             
-                    var tileEditor = tile?.GetComponent<TileController>();
+                    var tileController = tile?.GetComponent<TileController>();
+                    _tiles.Add(tileController);
                     
                     var cell = cellData?.FirstOrDefault(cell => cell.position == new Vector2Int(x, z)) ?? new CellArea
                     {
@@ -113,13 +119,13 @@ namespace Runtime.Commands
                         passengerArea = passengerCopy
                     };
             
-                    tileEditor?.Initialize(cellCopy);
+                    tileController?.Initialize(cellCopy);
 
                     if (cellCopy.passengerArea.colorType == ColorTypes.None) continue;
                     _colorCounts.TryAdd(cellCopy.passengerArea.colorType, 0);
 
                     _colorCounts[cellCopy.passengerArea.colorType]++;
-                    CreatePassenger(tile?.transform, _passengerHolderParent, cellCopy.passengerArea.colorType);
+                    CreatePassenger(tile?.transform, _passengerHolderParent, cellCopy);
                 }
             }
         }
@@ -134,14 +140,24 @@ namespace Runtime.Commands
             passenger.SetColliderPassengerEditor(false);
         }
         
-        private void CreatePassenger(Transform position, Transform parent, ColorTypes colorType)
+        private void CreatePassenger(Transform position, Transform parent, CellArea cellArea)
         {
             var passenger = PoolSignals.Instance.OnGetPoolableGameObject?.Invoke(PoolTypes.Passenger, parent, position.position, Quaternion.identity);
             var renderer = passenger?.GetComponentInChildren<Renderer>();
-            renderer!.material = _materialDictionary[colorType];
-            passenger.GetComponent<PassengerController>().Initialize(new PassengerArea{colorType = colorType});
-            
-            //passenger.SetColliderPassengerEditor(false);
+            renderer!.material = _materialDictionary[cellArea.passengerArea.colorType];
+            var passengerController = passenger?.GetComponent<PassengerController>();
+            passengerController.Initialize(cellArea, cellArea.passengerArea);
+            _passengers.Add(passengerController);
+        }
+
+        public List<TileController> GetCreatedTiles()
+        {
+            return _tiles;
+        }
+        
+        public List<PassengerController> GetCreatedPassengers()
+        {
+            return _passengers;
         }
     }
 }

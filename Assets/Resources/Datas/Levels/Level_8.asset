@@ -10,48 +10,51 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ba7119602d24f20a662bce54531bbcf, type: 3}
-  m_Name: Level_3
+  m_Name: Level_8
   m_EditorClassIdentifier: 
   Data:
-    levelID: 3
-    gridWidth: 8
-    gridLength: 7
-    time: 30
+    levelID: 8
+    gridWidth: 6
+    gridLength: 8
+    time: 105
     buses:
+    - colorType: 1
+    - colorType: 7
     - colorType: 8
-    - colorType: 3
-    - colorType: 5
-    - colorType: 2
-    - colorType: 4
+    - colorType: 6
     cells:
     - position: {x: 0, y: 0}
       gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 0, y: 1}
-      gridType: 0
+      gridType: 1
       passengerArea:
-        colorType: 8
+        colorType: 0
     - position: {x: 0, y: 2}
       gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 0, y: 3}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 0, y: 4}
-      gridType: 0
+      gridType: 1
       passengerArea:
-        colorType: 3
+        colorType: 0
     - position: {x: 0, y: 5}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 0, y: 6}
       gridType: 0
       passengerArea:
-        colorType: 5
+        colorType: 7
+    - position: {x: 0, y: 7}
+      gridType: 0
+      passengerArea:
+        colorType: 7
     - position: {x: 1, y: 0}
       gridType: 0
       passengerArea:
@@ -59,11 +62,11 @@ MonoBehaviour:
     - position: {x: 1, y: 1}
       gridType: 0
       passengerArea:
-        colorType: 8
+        colorType: 0
     - position: {x: 1, y: 2}
       gridType: 0
       passengerArea:
-        colorType: 8
+        colorType: 1
     - position: {x: 1, y: 3}
       gridType: 0
       passengerArea:
@@ -71,7 +74,7 @@ MonoBehaviour:
     - position: {x: 1, y: 4}
       gridType: 0
       passengerArea:
-        colorType: 3
+        colorType: 0
     - position: {x: 1, y: 5}
       gridType: 0
       passengerArea:
@@ -79,35 +82,43 @@ MonoBehaviour:
     - position: {x: 1, y: 6}
       gridType: 0
       passengerArea:
-        colorType: 5
+        colorType: 0
+    - position: {x: 1, y: 7}
+      gridType: 1
+      passengerArea:
+        colorType: 0
     - position: {x: 2, y: 0}
       gridType: 0
       passengerArea:
         colorType: 0
     - position: {x: 2, y: 1}
-      gridType: 1
+      gridType: 0
       passengerArea:
         colorType: 0
     - position: {x: 2, y: 2}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 1
     - position: {x: 2, y: 3}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 1
     - position: {x: 2, y: 4}
       gridType: 0
       passengerArea:
-        colorType: 3
+        colorType: 0
     - position: {x: 2, y: 5}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 7
     - position: {x: 2, y: 6}
       gridType: 0
       passengerArea:
-        colorType: 5
+        colorType: 0
+    - position: {x: 2, y: 7}
+      gridType: 1
+      passengerArea:
+        colorType: 0
     - position: {x: 3, y: 0}
       gridType: 0
       passengerArea:
@@ -119,11 +130,11 @@ MonoBehaviour:
     - position: {x: 3, y: 2}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 8
     - position: {x: 3, y: 3}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 8
     - position: {x: 3, y: 4}
       gridType: 0
       passengerArea:
@@ -131,8 +142,12 @@ MonoBehaviour:
     - position: {x: 3, y: 5}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 6
     - position: {x: 3, y: 6}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 7}
       gridType: 1
       passengerArea:
         colorType: 0
@@ -145,15 +160,15 @@ MonoBehaviour:
       passengerArea:
         colorType: 0
     - position: {x: 4, y: 2}
-      gridType: 1
+      gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 8
     - position: {x: 4, y: 3}
-      gridType: 1
+      gridType: 0
       passengerArea:
         colorType: 0
     - position: {x: 4, y: 4}
-      gridType: 1
+      gridType: 0
       passengerArea:
         colorType: 0
     - position: {x: 4, y: 5}
@@ -161,15 +176,19 @@ MonoBehaviour:
       passengerArea:
         colorType: 0
     - position: {x: 4, y: 6}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 4, y: 7}
       gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 0}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 1}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 2}
@@ -177,74 +196,22 @@ MonoBehaviour:
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 3}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 4}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 5}
-      gridType: 0
+      gridType: 1
       passengerArea:
         colorType: 0
     - position: {x: 5, y: 6}
       gridType: 0
       passengerArea:
-        colorType: 4
-    - position: {x: 6, y: 0}
-      gridType: 1
-      passengerArea:
-        colorType: 0
-    - position: {x: 6, y: 1}
+        colorType: 6
+    - position: {x: 5, y: 7}
       gridType: 0
       passengerArea:
-        colorType: 0
-    - position: {x: 6, y: 2}
-      gridType: 0
-      passengerArea:
-        colorType: 0
-    - position: {x: 6, y: 3}
-      gridType: 0
-      passengerArea:
-        colorType: 0
-    - position: {x: 6, y: 4}
-      gridType: 0
-      passengerArea:
-        colorType: 2
-    - position: {x: 6, y: 5}
-      gridType: 0
-      passengerArea:
-        colorType: 0
-    - position: {x: 6, y: 6}
-      gridType: 0
-      passengerArea:
-        colorType: 4
-    - position: {x: 7, y: 0}
-      gridType: 1
-      passengerArea:
-        colorType: 0
-    - position: {x: 7, y: 1}
-      gridType: 1
-      passengerArea:
-        colorType: 0
-    - position: {x: 7, y: 2}
-      gridType: 0
-      passengerArea:
-        colorType: 0
-    - position: {x: 7, y: 3}
-      gridType: 0
-      passengerArea:
-        colorType: 0
-    - position: {x: 7, y: 4}
-      gridType: 0
-      passengerArea:
-        colorType: 2
-    - position: {x: 7, y: 5}
-      gridType: 0
-      passengerArea:
-        colorType: 2
-    - position: {x: 7, y: 6}
-      gridType: 0
-      passengerArea:
-        colorType: 4
+        colorType: 6

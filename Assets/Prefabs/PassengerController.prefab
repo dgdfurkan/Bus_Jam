@@ -431,7 +431,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 7d68c61e78135454a82dbe8faf146232, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -640,8 +640,9 @@ GameObject:
   m_Component:
   - component: {fileID: 878545847169845332}
   - component: {fileID: -3429696978561196943}
+  - component: {fileID: 4526578558607565614}
   m_Layer: 0
-  m_Name: PassengerManager
+  m_Name: PassengerController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -676,7 +677,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6386f9763f24e3b978feb908ff2064b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorType: 0
+  animator: {fileID: 4226791448607911206}
+  outline: {fileID: 7287112346532047124}
+--- !u!65 &4526578558607565614
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4257948707137061558}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.8704606, z: 0.70370656}
+  m_Center: {x: 6.750355e-17, y: 0.9123129, z: 0.026499853}
 --- !u!1 &4284651978026757996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 550962665574684515}
   - component: {fileID: 380258980369052526}
+  - component: {fileID: 7287112346532047124}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1174,6 +1198,24 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00000008940697, y: 0.89193386, z: -0.012163937}
     m_Extent: {x: 0.65829575, y: 0.9524551, z: 0.32191166}
   m_DirtyAABB: 0
+--- !u!114 &7287112346532047124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8268376759950110841}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  outlineWidth: 3
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &8973094780171087454
 GameObject:
   m_ObjectHideFlags: 0

@@ -82,14 +82,14 @@ namespace Runtime.Managers
             CoreGameSignals.OnLoadLevelInitialize += LoadLevel;
         }
 
-        private void OnDisable()
-        {
-            CoreGameSignals.OnLoadLevelInitialize -= LoadLevel;
-        }
-
         private void LoadLevel(int levelID)
         {
             
+        }
+
+        private void OnDisable()
+        {
+            CoreGameSignals.OnLoadLevelInitialize -= LoadLevel;
         }
         
         private void Start()

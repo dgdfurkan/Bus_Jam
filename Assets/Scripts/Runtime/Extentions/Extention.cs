@@ -36,6 +36,16 @@ namespace Runtime.Extentions
             if (passengerCollider is not null) passengerCollider.enabled = value;
             if (passengerEditor is not null) passengerEditor.enabled = value;
         }
+        
+        public static string ColoredText(this string text, Color color)
+        {
+            return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
+        }
+        
+        public static string ColoredObj(this object obj, Color color)
+        {
+            return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{obj.ToString()}</color>";
+        }
     }
 }
 
