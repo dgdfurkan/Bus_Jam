@@ -36,7 +36,6 @@ namespace Runtime.Managers
         private void Awake()
         {
             _playerInputAction = GetComponent<PlayerInput>();
-            //_touchPressAction = _playerInputAction.actions.FindAction("TouchPress");
             _leftClickAction = _playerInputAction.currentActionMap.FindAction("LeftClick");
             _rightClickAction = _playerInputAction.currentActionMap?.FindAction("RightClick");
             _mousePositionAction = _playerInputAction.currentActionMap?.FindAction("MousePosition");
@@ -111,7 +110,7 @@ namespace Runtime.Managers
         {
             if (Touchscreen.current is not null)
             {
-                Debug.Log("Touch pressed");
+                //Debug.Log("Touch pressed");
                 if (Touchscreen.current.primaryTouch.press.isPressed)
                 {
                     Ray(Touchscreen.current.primaryTouch.position.ReadValue());
@@ -120,7 +119,7 @@ namespace Runtime.Managers
 
             if (Mouse.current is null) return;
             if (!Mouse.current.leftButton.isPressed) return;
-            Debug.Log("Mouse left button pressed");
+            //Debug.Log("Mouse left button pressed");
             Ray(Mouse.current.position.ReadValue());
         }
 
@@ -158,13 +157,11 @@ namespace Runtime.Managers
         private void OnMousePosition(InputAction.CallbackContext context)
         {
             if (Mouse.current is null) return;
-            //Debug.Log($"Mouse position: {Mouse.current.position.ReadValue()}");
         }
         
         private void OnScroll(InputAction.CallbackContext context)
         {
-            float scrollValue = context.ReadValue<float>();
-            //EventManager.Scroll(scrollValue);
+            var scrollValue = context.ReadValue<float>();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Runtime.Commands
             _busHolder = busHolder;
             _spawnPositions = new Queue<Vector3>();
 
-            InitializeSpawnPositions(/*LevelEditorManager.Instance.GetTotalPassengerCount()*/ CoreGameSignals.OnGetTotalPassengerCount.Invoke() / 3);
+            InitializeSpawnPositions(/*LevelEditorManager.Instance.GetTotalPassengerCount()*/ CoreGameSignals.Instance.OnGetTotalPassengerCount.Invoke() / 3);
         }
 
         public void SetMaterialDictionary(Dictionary<ColorTypes, Material> materialDictionary)
@@ -34,8 +34,6 @@ namespace Runtime.Commands
         private void InitializeSpawnPositions(int count)
         {
             var startPosition = _busHolder.position;
-            //var xOffset = PoolSignals.OnGetPrefabScale(PoolTypes.BusEditor).x;
-            //Debug.Log($"xOffset: {xOffset}");
             var offset = new Vector3(-6, 0, 0);
 
             for (var i = 0; i < count; i++)
@@ -73,7 +71,7 @@ namespace Runtime.Commands
 
         public void CreateBusesFunc(int levelID)
         {
-            var levelData = CoreGameSignals.OnGetLevelData.Invoke(levelID);
+            var levelData = CoreGameSignals.Instance.OnGetLevelData.Invoke(levelID);
             var colorCounts = new Dictionary<ColorTypes, int>();
 
             foreach (var cell in levelData.cells.Where(cell => cell.passengerArea.colorType != ColorTypes.None))
@@ -97,7 +95,7 @@ namespace Runtime.Commands
         {
             if (_spawnPositions.Count == 0)
             {
-                InitializeSpawnPositions(CoreGameSignals.OnGetTotalPassengerCount.Invoke() / 3);
+                InitializeSpawnPositions(CoreGameSignals.Instance.OnGetTotalPassengerCount.Invoke() / 3);
             }
 
             var position = _spawnPositions.Dequeue();
@@ -111,7 +109,7 @@ namespace Runtime.Commands
         {
             if (_spawnPositions.Count == 0)
             {
-                InitializeSpawnPositions(CoreGameSignals.OnGetTotalPassengerCount.Invoke() / 3);
+                InitializeSpawnPositions(CoreGameSignals.Instance.OnGetTotalPassengerCount.Invoke() / 3);
             }
 
             var position = _spawnPositions.Dequeue();

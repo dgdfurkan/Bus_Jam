@@ -34,7 +34,6 @@ namespace Runtime.Datas.ValueObjects
     {
         public Vector2Int position;
         public GridTypes gridType;
-        //public ColorTypes colorTypes;
         public PassengerArea passengerArea;
     }
 }

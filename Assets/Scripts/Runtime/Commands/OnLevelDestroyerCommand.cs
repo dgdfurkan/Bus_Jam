@@ -14,7 +14,5 @@ public class OnLevelDestroyerCommand : ICommand
     public void Execute()
     {
         // TODO: Implement not destroying the level prefab, just delete the data.
-        // if (_levelHolder.transform.childCount <= 0) return;
-        // Object.Destroy(_levelHolder.transform.GetChild(0).gameObject);
     }
 }

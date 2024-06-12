@@ -38,23 +38,16 @@ namespace Runtime.Managers
             curZoom = _cam.transform.localPosition.y;
             
             _currentPosition = transform.position;
-            //transform.position = _cam.transform.position;
-            //transform.eulerAngles = _cam.transform.eulerAngles;
         }
 
         private void Update()
         {
-            //HandleCameraMovementKey();
             if(_useEdgeScrolling) HandleCameraMovementEdgeScrolling();
             if(_useDragPan) HandleCameraMovementDragPan();
             
             if(Input.GetKeyUp(KeyCode.R)) transform.position = _currentPosition;
             if(Input.GetKeyUp(KeyCode.F)) _useEdgeScrolling = !_useEdgeScrolling;
             if(Input.GetKeyUp(KeyCode.G)) _useDragPan = !_useDragPan;
-            
-            // ZoomCamera();
-            // RotateCamera();
-            // MoveCamera();
         }
 
         private void HandleCameraMovementKey()
@@ -124,19 +117,6 @@ namespace Runtime.Managers
             transform.Rotate(mouseInput * rotateSpeed);
             var eulerRotation = transform.rotation.eulerAngles;
             transform.rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0f);
-            
-            // var x = Input.GetAxis("Mouse X");
-            // var y = Input.GetAxis("Mouse Y");
-            //
-            // // Eğer mouse hareket etmiyorsa, fonksiyondan çık
-            // if (Mathf.Approximately(x, 0) && Mathf.Approximately(y, 0)) return;
-            //
-            // _curXRot += rotateSpeed * -y;
-            // _curXRot = Mathf.Clamp(_curXRot, minXRot, maxXRot);
-            //
-            // _curYRot += rotateSpeed * x;
-            //
-            // transform.eulerAngles = new Vector3(_curXRot, _curYRot, 0f);
         }
 
         private void MoveCamera()

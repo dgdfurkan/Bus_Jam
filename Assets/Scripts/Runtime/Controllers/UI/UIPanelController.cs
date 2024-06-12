@@ -25,16 +25,16 @@ namespace Runtime.Controllers.Objects.UI
 
         private void SubscribeEvents()
         {
-            CoreUISignals.OnOpenPanel += OnOpenPanel;
-            CoreUISignals.OnClosePanel += OnClosePanel;
-            CoreUISignals.OnCloseTopPanel += OnCloseTopPanel;
-            CoreUISignals.OnCloseAllPanels += OnCloseAllPanel;
+            CoreUISignals.Instance.OnOpenPanel += OnOpenPanel;
+            CoreUISignals.Instance.OnClosePanel += OnClosePanel;
+            CoreUISignals.Instance.OnCloseTopPanel += OnCloseTopPanel;
+            CoreUISignals.Instance.OnCloseAllPanels += OnCloseAllPanel;
         }
         
         [Button("OpenPanel")]
         private void OnOpenPanel(UIPanelTypes panel, int layerValue)
         {
-            CoreUISignals.OnClosePanel?.Invoke(layerValue);
+            CoreUISignals.Instance.OnClosePanel?.Invoke(layerValue);
             Instantiate(Resources.Load<GameObject>($"Screens/{panel}Panel"), layers[layerValue].transform);
         }
         
@@ -75,10 +75,10 @@ namespace Runtime.Controllers.Objects.UI
 
         private void UnsubscribeEvents()
         {
-            CoreUISignals.OnOpenPanel -= OnOpenPanel;
-            CoreUISignals.OnClosePanel -= OnClosePanel;
-            CoreUISignals.OnCloseTopPanel -= OnCloseTopPanel;
-            CoreUISignals.OnCloseAllPanels -= OnCloseAllPanel;
+            CoreUISignals.Instance.OnOpenPanel -= OnOpenPanel;
+            CoreUISignals.Instance.OnClosePanel -= OnClosePanel;
+            CoreUISignals.Instance.OnCloseTopPanel -= OnCloseTopPanel;
+            CoreUISignals.Instance.OnCloseAllPanels -= OnCloseAllPanel;
         }
 
         private void OnDisable()

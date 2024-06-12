@@ -4,6 +4,7 @@ namespace Runtime.Signals
 {
     public static class SaveSignals
     {
-        public static UnityAction OnSaveGameData = delegate { };
+        public static UnityAction<int> OnSaveGameData = delegate { };
+        public static UnityAction OnLoadSaveData = delegate { };
     }
 }

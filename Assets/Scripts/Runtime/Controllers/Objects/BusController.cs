@@ -1,4 +1,5 @@
-﻿using _Modules.ObjectPooling.Scripts.Enums;
+﻿using System.Collections.Generic;
+using _Modules.ObjectPooling.Scripts.Enums;
 using _Modules.ObjectPooling.Scripts.Signals;
 using DG.Tweening;
 using Runtime.Datas.ValueObjects;
@@ -14,57 +15,80 @@ namespace Runtime.Controllers.Objects
 
         #region Public  Variables
 
-        //
+        public BusArea Data { get; private set; }
+        [HideInInspector] public bool IsReadyToMove { get; set; } = false;
 
         #endregion
 
         #region Serialized Variables
 
-        [SerializeField] private int capacity = 3;
+        [SerializeField] private List<Transform> passengerPositions;
         
         #endregion
 
         #region Private Variables
 
-        public BusArea Data { get; private set; }
         private int _currentPassengerCount;
+        private readonly int _capacity = 3;
+        private readonly List<GameObject> _passengers = new List<GameObject>();
 
         #endregion
 
         #endregion
 
-        private void Awake()
+        private void OnEnable()
         {
             _currentPassengerCount = 0;
-        }
-        
-        private bool IsFull()
-        {
-            return _currentPassengerCount >= capacity;
+            _passengers.Clear();
         }
 
+        private void OnDisable()
+        {
+            _currentPassengerCount = 0;
+            _passengers.Clear();
+        }
+
+        public bool IsFull()
+        {
+            return _currentPassengerCount >= _capacity;
+        }
+        
         public void Initialize(BusArea data)
         {
             Data = data;
         }
 
-        public void IncreasePassengerCount()
+        public void IncreasePassengerCount(GameObject obj)
         {
+            if (IsFull()) return;
             _currentPassengerCount++;
+            _passengers.Add(obj);
+        }
+        
+        public void PlacePassenger()
+        {
+            _passengers[_currentPassengerCount - 1].transform.SetParent(passengerPositions[_currentPassengerCount - 1]);
+            _passengers[_currentPassengerCount - 1].transform.localPosition = Vector3.zero;
+            _passengers[_currentPassengerCount - 1].transform.localRotation = Quaternion.identity;
+            _passengers[_currentPassengerCount - 1].transform.Rotate(0,90,0);
+        }
+
+        public void BusFull()
+        {
             if (!IsFull()) return;
-            
-            CoreGameSignals.OnBusFull?.Invoke();
+
+            CoreGameSignals.Instance.OnBusFull?.Invoke();
             transform.DOMoveX(transform.position.x + 12f, .6f)
                 .SetEase(Ease.InOutCirc)
                 .OnComplete(() =>
                 {
+                    _passengers.ForEach(controller => PoolSignals.Instance.OnSetPooledGameObject(controller.gameObject, PoolTypes.Passenger));
                     PoolSignals.Instance.OnSetPooledGameObject(gameObject, PoolTypes.Bus);
                 });
         }
 
         public void Move(float positionX)
         {
-            print(transform.position.x - positionX);
             transform.DOMoveX(positionX, .5f)
                 .SetEase(Ease.InOutCirc);
         }

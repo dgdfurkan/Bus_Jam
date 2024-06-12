@@ -87,7 +87,7 @@ namespace Runtime.Managers
 
         private void OnEnable()
         {
-            CoreGameSignals.OnGetTotalPassengerCount += GetTotalPassengerCount;
+            CoreGameSignals.Instance.OnGetTotalPassengerCount += GetTotalPassengerCount;
         }
 
         private int GetTotalPassengerCount()
@@ -97,7 +97,7 @@ namespace Runtime.Managers
         
         private void OnDisable()
         {
-            CoreGameSignals.OnGetTotalPassengerCount -= GetTotalPassengerCount;
+            CoreGameSignals.Instance.OnGetTotalPassengerCount -= GetTotalPassengerCount;
         }
         
         private void Start()
@@ -108,10 +108,6 @@ namespace Runtime.Managers
     
             _onGridCreator.SetMaterialDictionary(_colorObjectList);
             _onBusCreator.SetMaterialDictionary(_colorObjectList);
-            
-            // if (LevelOrganizer.OnGetLevelEditorData?.Invoke(1) is not null)
-            //     LoadLevel(1);
-            // else CreateNewLevel();
             
             LoadLevel(LevelOrganizer.OnDetectMaksimumLevel.Invoke());
         }
@@ -196,7 +192,6 @@ namespace Runtime.Managers
                 cells = new List<CellArea>(cellsEditor)
             };
             
-            // Check if any value has changed
             if (data != null)
             {
                 if (LevelDataComparer.AreDatasEqual(data, currentData))
@@ -294,12 +289,7 @@ namespace Runtime.Managers
         private void ClearGrid()
         {
             _onGridDestroyer.DestroyGridEditor();
-            _onGridDestroyer.DestroyPassengerEditor();
-            
-            //gridParent.ClearChildren(PoolTypes.TileEditor);
-            
-            //passengerParent.ClearChildren(PoolTypes.PassengerEditor);
-            
+            _onGridDestroyer.DestroyPassengerEditor();            
             cellsEditor.Clear();
         }   
         

@@ -34,13 +34,11 @@ namespace Runtime.Managers
         {
             if (IsMoving) return;
             
-            // Objenin kopyasını oluştur ve referansı al
             var currentClone = Instantiate(gameObject);
             
             offset = currentClone.transform.position - position;
             IsMoving = true;
 
-            // Kopyayı hareket ettir
             currentClone.transform.position = position + offset;
         }
 

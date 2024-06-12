@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DG.Tweening;
 using Runtime.Commands;
 using Runtime.Controllers.Objects;
@@ -67,7 +68,8 @@ namespace Runtime.Managers
         
         private int _currentLevel;
         private int _totalLevelCount;
-
+        private bool _isFirstInputTaken = false; 
+        
         #endregion
 
         #endregion
@@ -77,7 +79,6 @@ namespace Runtime.Managers
             (levelHolder = levelHolder == null ? new GameObject("LevelHolder").transform : levelHolder).SetParent(transform);
             _datas = GetDatas();
             _colorData = GetColorData();
-            _currentLevel = GetActiveLevel();
             _totalLevelCount = GetTotalLevelCount();
         
             Init();
@@ -112,11 +113,6 @@ namespace Runtime.Managers
         {
             return Resources.Load<CD_Color>("Datas/Colors/CD_Color");
         }
-
-        private int GetActiveLevel()
-        {
-            return _currentLevel;
-        }
     
         private int GetTotalLevelCount()
         {
@@ -129,37 +125,34 @@ namespace Runtime.Managers
         {
             SubscribeEvents();
             
-            //_currentLevel = GetLevelID();
+            SaveSignals.OnLoadSaveData?.Invoke();
         }
 
         private void SubscribeEvents()
         {
-            CoreGameSignals.OnLevelInitialize += _levelLoaderCommand.Execute;
+            CoreGameSignals.Instance.OnLevelInitialize += _levelLoaderCommand.Execute;
             
-            CoreGameSignals.OnLevelInitialize += _gridCreator.CreateGridFunc;
-            CoreGameSignals.OnLevelInitialize += _busCreator.CreateBusesFunc;
+            CoreGameSignals.Instance.OnLevelInitialize += _gridCreator.CreateGridFunc;
+            CoreGameSignals.Instance.OnLevelInitialize += _busCreator.CreateBusesFunc;
             
-            CoreGameSignals.OnClearActiveLevel += _levelDestroyerCommand.Execute;
+            CoreGameSignals.Instance.OnClearActiveLevel += _levelDestroyerCommand.Execute;
             
-            CoreGameSignals.OnClearActiveLevel += _gridDestroyer.DestroyGridFunc;
-            CoreGameSignals.OnClearActiveLevel += _gridDestroyer.DestroyPassengerFunc;
-            CoreGameSignals.OnClearActiveLevel += _busDestroyer.DestroyBusFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel += _gridDestroyer.DestroyGridFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel += _gridDestroyer.DestroyPassengerFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel += _busDestroyer.DestroyBusFunc;
             
-            CoreGameSignals.OnGetLevelID += GetLevelID;
-            CoreGameSignals.OnGetLevelData += ReturnGetLevelData;
-            CoreGameSignals.OnGetCurrentLevelData += ReturnGetCurrentLevelData;
-            CoreGameSignals.OnNextLevel += OnNextLevel;
-            CoreGameSignals.OnRestartLevel += OnRestartLevel;
-            CoreGameSignals.OnGetTotalPassengerCount += GetTotalPassengerCount;
-            CoreGameSignals.OnBusFull += OnBusFull;
-            CoreGameSignals.OnUpdateCellArea += OnUpdateCellArea;
-            CoreGameSignals.OnSendAvailableBusStop += OnSendAvailableBusStop;
-        }
-    
-        private int GetLevelID()
-        {
-            if (!ES3.FileExists()) return 0;
-            return ES3.KeyExists("Level") ? ES3.Load<int>("Level") % _totalLevelCount : 0;
+            CoreGameSignals.Instance.OnGetFirstInput += () => _isFirstInputTaken;
+            CoreGameSignals.Instance.OnFirstInputTaken += () => _isFirstInputTaken = true;
+            CoreGameSignals.Instance.OnGetLevelID += () => _currentLevel;
+            CoreGameSignals.Instance.OnSetLevelID += level => _currentLevel = level;
+            CoreGameSignals.Instance.OnGetLevelData += ReturnGetLevelData;
+            CoreGameSignals.Instance.OnGetCurrentLevelData += ReturnGetCurrentLevelData;
+            CoreGameSignals.Instance.OnNextLevel += OnNextLevel;
+            CoreGameSignals.Instance.OnRestartLevel += OnRestartLevel;
+            CoreGameSignals.Instance.OnGetTotalPassengerCount += GetTotalPassengerCount;
+            CoreGameSignals.Instance.OnBusFull += OnBusFull;
+            CoreGameSignals.Instance.OnUpdateCellArea += UpdateCellArea;
+            CoreGameSignals.Instance.OnSendAvailableBusStop += OnSendAvailableBusStop;
         }
         
         private LevelData ReturnGetLevelData(int levelIndex)
@@ -177,21 +170,21 @@ namespace Runtime.Managers
         {
             _currentLevel++;
             _currentLevel %= _totalLevelCount;
-            //SaveSignals.OnSaveGameData?.Invoke();
-            CoreGameSignals.OnClearActiveLevel?.Invoke();
-            CoreGameSignals.OnReset?.Invoke();
-            CoreGameSignals.OnLevelInitialize?.Invoke(_currentLevel);
+            SaveSignals.OnSaveGameData?.Invoke(_currentLevel);
+            CoreGameSignals.Instance.OnClearActiveLevel?.Invoke();
+            CoreGameSignals.Instance.OnReset?.Invoke();
+            CoreGameSignals.Instance.OnLevelInitialize?.Invoke(_currentLevel);
             GetCreatedObjects();
         }
     
         [ButtonGroup("Level")]
         private void OnRestartLevel()
         {
-            //SaveSignals.OnSaveGameData?.Invoke();
-            CoreGameSignals.OnClearActiveLevel?.Invoke();
-            CoreGameSignals.OnReset?.Invoke();
-            CoreGameSignals.OnLevelInitialize?.Invoke(_currentLevel);
+            SaveSignals.OnSaveGameData?.Invoke(_currentLevel);
             GetCreatedObjects();
+            CoreGameSignals.Instance.OnClearActiveLevel?.Invoke();
+            CoreGameSignals.Instance.OnReset?.Invoke();
+            CoreGameSignals.Instance.OnLevelInitialize?.Invoke(_currentLevel);
         }
         
         private int GetTotalPassengerCount()
@@ -208,7 +201,7 @@ namespace Runtime.Managers
             passengers = _gridCreator.GetCreatedPassengers();
             tiles = _gridCreator.GetCreatedTiles();
             buses = _busCreator.GetCreatedBuses();
-            CoreGameSignals.OnUpdateBusColor?.Invoke(buses.Peek().Data);
+            CoreGameSignals.Instance.OnUpdateBusColor?.Invoke(buses.Peek().Data);
             //busStops.ForEach(bus => bus.GetBusStopData());
         }
         
@@ -222,34 +215,38 @@ namespace Runtime.Managers
             }
             
             buses.Dequeue();
-            CoreGameSignals.OnUpdateBusColor?.Invoke(new BusArea{colorType = ColorTypes.None});
+            //CoreGameSignals.Instance.OnUpdateBusColor?.Invoke(new BusArea{colorType = ColorTypes.None});
 
-            if (buses.Count == 0)
+            DOVirtual.DelayedCall(0.5f, CheckBusStop);
+            DOVirtual.DelayedCall(0.6f, CheckBusStop);
+
+            if (buses.Count != 0) return;
+            
+            DOVirtual.DelayedCall(1f, () =>
             {
-                print("No Bus Left");
-                DOVirtual.DelayedCall(0.5f, () =>
-                {
-                    CoreGameSignals.OnLevelSuccessful?.Invoke();
-                });
-                return;
-            }
-            DOVirtual.DelayedCall(0.4f, CheckBusStop).OnComplete(() =>
-            {
-                DOVirtual.DelayedCall(0.1f, CheckBusStop);
+                CoreGameSignals.Instance.OnLevelSuccessful?.Invoke();
             });
         }
 
-        private void CheckBusStop()
+        [Button("Check Bus Stop")]
+        public void CheckBusStop()
         {
-            CoreGameSignals.OnUpdateBusColor?.Invoke(buses.Peek().Data);
-            busStops.Where(bus => bus.isOccupied && bus.Data.colorType == buses.Peek().Data.colorType)
-                .ToList()
-                .ForEach(bus => bus.PassengerController.MoveBus());
+            CoreGameSignals.Instance.OnUpdateBusColor?.Invoke(buses.Peek().Data);
+
+            foreach (var busStop in busStops.Where(busStop => busStop.isOccupied && busStop.Data.colorType == buses.Peek().Data.colorType))
+            {
+                busStop.PassengerController.MoveBus();
+            }
         }
 
-        private void OnUpdateCellArea(CellArea cellArea)
+        [Button("passengers.SetOutline")]
+        private void UpdateCellArea(CellArea cellArea)
         {
-            passengers.ForEach(passenger => passenger.SetOutline());
+            //passengers.ForEach(passenger => passenger.SetOutline());
+            foreach (var passenger in passengers)
+            {
+                passenger.SetOutline();
+            }
         }
         
         private BusStopController OnSendAvailableBusStop()
@@ -260,24 +257,29 @@ namespace Runtime.Managers
 
         private void UnsubscribeEvents()
         {
-            CoreGameSignals.OnLevelInitialize -= _levelLoaderCommand.Execute;
+            CoreGameSignals.Instance.OnLevelInitialize -= _levelLoaderCommand.Execute;
             
-            CoreGameSignals.OnLevelInitialize -= _gridCreator.CreateGridFunc;
-            CoreGameSignals.OnLevelInitialize -= _busCreator.CreateBusesFunc;
+            CoreGameSignals.Instance.OnLevelInitialize -= _gridCreator.CreateGridFunc;
+            CoreGameSignals.Instance.OnLevelInitialize -= _busCreator.CreateBusesFunc;
             
-            CoreGameSignals.OnClearActiveLevel -= _levelDestroyerCommand.Execute;
+            CoreGameSignals.Instance.OnClearActiveLevel -= _levelDestroyerCommand.Execute;
             
-            CoreGameSignals.OnClearActiveLevel -= _gridDestroyer.DestroyGridFunc;
-            CoreGameSignals.OnClearActiveLevel -= _gridDestroyer.DestroyPassengerFunc;
-            CoreGameSignals.OnClearActiveLevel -= _busDestroyer.DestroyBusFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel -= _gridDestroyer.DestroyGridFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel -= _gridDestroyer.DestroyPassengerFunc;
+            CoreGameSignals.Instance.OnClearActiveLevel -= _busDestroyer.DestroyBusFunc;
             
-            CoreGameSignals.OnGetLevelData -= ReturnGetLevelData;
-            CoreGameSignals.OnGetCurrentLevelData -= ReturnGetCurrentLevelData;
-            CoreGameSignals.OnNextLevel -= OnNextLevel;
-            CoreGameSignals.OnRestartLevel -= OnRestartLevel;
-            CoreGameSignals.OnGetTotalPassengerCount -= GetTotalPassengerCount;
-            CoreGameSignals.OnUpdateCellArea -= OnUpdateCellArea;
-            CoreGameSignals.OnSendAvailableBusStop = OnSendAvailableBusStop;
+            CoreGameSignals.Instance.OnGetFirstInput -= () => _isFirstInputTaken;
+            CoreGameSignals.Instance.OnFirstInputTaken -= () => _isFirstInputTaken = true;
+            CoreGameSignals.Instance.OnGetLevelID -= () => _currentLevel;
+            CoreGameSignals.Instance.OnSetLevelID -= level => _currentLevel = level;
+            CoreGameSignals.Instance.OnGetLevelData -= ReturnGetLevelData;
+            CoreGameSignals.Instance.OnGetCurrentLevelData -= ReturnGetCurrentLevelData;
+            CoreGameSignals.Instance.OnNextLevel -= OnNextLevel;
+            CoreGameSignals.Instance.OnRestartLevel -= OnRestartLevel;
+            CoreGameSignals.Instance.OnGetTotalPassengerCount -= GetTotalPassengerCount;
+            CoreGameSignals.Instance.OnBusFull -= OnBusFull;
+            CoreGameSignals.Instance.OnUpdateCellArea -= UpdateCellArea;
+            CoreGameSignals.Instance.OnSendAvailableBusStop -= OnSendAvailableBusStop;
         }
         
         private void OnDisable()
@@ -289,8 +291,7 @@ namespace Runtime.Managers
         
         private void Start()
         {
-            print($"Level Count: {ReturnGetLevelData(0).levelID}");
-            CoreGameSignals.OnLevelInitialize?.Invoke(GetLevelID());
+            CoreGameSignals.Instance.OnLevelInitialize?.Invoke(_currentLevel);
             GetCreatedObjects();
             //CoreUISignals.Instance.onOpenPanel?.Invoke(UIPanelTypes.Start, 1);
         }

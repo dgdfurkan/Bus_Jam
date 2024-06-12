@@ -28,26 +28,6 @@ namespace Runtime.Managers
             cellData = data;
             UpdateAppearance();
         }
-
-        // private void OnMouseDown()
-        // {
-        //     if(PassengerEditorManager.Instance.selectedPassengerEditor is not null) return;
-        //     
-        //     cellData.gridType = cellData.gridType == GridTypes.Normal ? GridTypes.Disabled : GridTypes.Normal;
-        //     UpdateAppearance();
-        //     if (cellData.gridType == GridTypes.Disabled)
-        //     {
-        //         foreach (Transform child in PassengerEditorManager.Instance.passengerParent)
-        //         {
-        //             if (child.position != transform.position) continue;
-        //             PoolSignals.Instance.OnSetPooledGameObject?.Invoke(child.gameObject, PoolTypes.PassengerEditor);
-        //             //Destroy(child.gameObject);
-        //             break;
-        //         }
-        //         cellData.passengerArea.colorType = ColorTypes.None;
-        //     }
-        //     LevelEditorManager.Instance.UpdateCellDatas(cellData);
-        // }
         
         public void Touch()
         {
@@ -77,7 +57,6 @@ namespace Runtime.Managers
 
         public void Click()
         {
-            print(IsClickable);
             if(!IsClickable) return;
             
             if(PassengerEditorManager.Instance.selectedPassengerEditor is not null) return;

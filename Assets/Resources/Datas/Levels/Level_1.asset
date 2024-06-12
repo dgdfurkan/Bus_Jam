@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     levelID: 1
-    gridWidth: 3
-    gridLength: 3
+    gridWidth: 6
+    gridLength: 6
     time: 30
     buses:
     - colorType: 1
     - colorType: 4
+    - colorType: 2
+    - colorType: 5
     cells:
     - position: {x: 0, y: 0}
       gridType: 0
@@ -33,6 +35,18 @@ MonoBehaviour:
       gridType: 0
       passengerArea:
         colorType: 1
+    - position: {x: 0, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 0, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 0, y: 5}
+      gridType: 1
+      passengerArea:
+        colorType: 0
     - position: {x: 1, y: 0}
       gridType: 0
       passengerArea:
@@ -45,6 +59,18 @@ MonoBehaviour:
       gridType: 0
       passengerArea:
         colorType: 1
+    - position: {x: 1, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 1, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 1, y: 5}
+      gridType: 0
+      passengerArea:
+        colorType: 0
     - position: {x: 2, y: 0}
       gridType: 0
       passengerArea:
@@ -57,3 +83,87 @@ MonoBehaviour:
       gridType: 0
       passengerArea:
         colorType: 4
+    - position: {x: 2, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 2, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 2, y: 5}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 0}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 1}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 2}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 3, y: 5}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 4, y: 0}
+      gridType: 0
+      passengerArea:
+        colorType: 2
+    - position: {x: 4, y: 1}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 4, y: 2}
+      gridType: 0
+      passengerArea:
+        colorType: 5
+    - position: {x: 4, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 4, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 4, y: 5}
+      gridType: 0
+      passengerArea:
+        colorType: 2
+    - position: {x: 5, y: 0}
+      gridType: 0
+      passengerArea:
+        colorType: 2
+    - position: {x: 5, y: 1}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 5, y: 2}
+      gridType: 0
+      passengerArea:
+        colorType: 5
+    - position: {x: 5, y: 3}
+      gridType: 0
+      passengerArea:
+        colorType: 5
+    - position: {x: 5, y: 4}
+      gridType: 0
+      passengerArea:
+        colorType: 0
+    - position: {x: 5, y: 5}
+      gridType: 0
+      passengerArea:
+        colorType: 0

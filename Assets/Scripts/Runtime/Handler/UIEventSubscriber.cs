@@ -78,7 +78,7 @@ namespace Runtime.Handler
                     button.onClick.AddListener(_manager.OnCredits);
                     break;
                 case UIEventSubscriptionTypes.OnCloseTopPanel:
-                    button.onClick.AddListener(CoreUISignals.OnCloseTopPanel);
+                    button.onClick.AddListener(CoreUISignals.Instance.OnCloseTopPanel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -120,7 +120,7 @@ namespace Runtime.Handler
                     button.onClick.RemoveListener(_manager.OnCredits);
                     break;
                 case UIEventSubscriptionTypes.OnCloseTopPanel:
-                    button.onClick.RemoveListener(CoreUISignals.OnCloseTopPanel);
+                    button.onClick.RemoveListener(CoreUISignals.Instance.OnCloseTopPanel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

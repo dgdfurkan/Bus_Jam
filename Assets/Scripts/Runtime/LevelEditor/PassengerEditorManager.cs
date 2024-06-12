@@ -85,7 +85,6 @@ namespace Runtime.Managers
 
         private void CreateClone()
         {
-            //_clone = PoolSignals.OnGetPoolableGameObject?.Invoke(PoolTypes.PassengerEditor, null, Vector3.zero, Quaternion.identity);
             _clone = Instantiate(selectedPassengerEditor.gameObject, selectedPassengerEditor.transform.position, Quaternion.identity);
             
             _clone.SetColliderPassengerEditor(false);
@@ -96,8 +95,6 @@ namespace Runtime.Managers
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit))
             {
-                print(hit.transform.name);
-                print(hit.transform.gameObject.name);
                 if (hit.transform.TryGetComponent(out TileEditor tileEditor))
                 {
                     if (tileEditor.cellData.gridType != GridTypes.Normal) return;
@@ -107,12 +104,10 @@ namespace Runtime.Managers
                         if (child.position != tileEditor.transform.position) continue;
                         child.gameObject.SetColliderPassengerEditor(true);
                         PoolSignals.Instance.OnSetPooledGameObject?.Invoke(child.gameObject, PoolTypes.PassengerEditor);
-                        //Destroy(child.gameObject);
                         break;
                     }
                     
                     var newPassenger = PoolSignals.Instance.OnGetPoolableGameObject?.Invoke(PoolTypes.PassengerEditor, passengerParent, tileEditor.transform.position, Quaternion.identity);
-                    //var newPassenger = Instantiate(selectedPassengerEditor.gameObject, tileEditor.transform.position, Quaternion.identity);
                     newPassenger?.transform.SetParent(passengerParent.transform);
                     tileEditor.cellData.passengerArea.colorType = selectedPassengerEditor.colorType;
                         
@@ -140,10 +135,8 @@ namespace Runtime.Managers
 
         private void DestroyIt()
         {
-            print("Destroy it");
             selectedPassengerEditor = null;
             if (_clone is null) return;
-            //PoolSignals.OnSetPooledGameObject?.Invoke(_clone, PoolTypes.PassengerEditor);
             Destroy(_clone);
             _clone = null;
         }

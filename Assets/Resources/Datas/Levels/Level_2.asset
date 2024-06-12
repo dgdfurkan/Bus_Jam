@@ -16,9 +16,9 @@ MonoBehaviour:
     levelID: 2
     gridWidth: 4
     gridLength: 4
-    time: 78
+    time: 30
     buses:
-    - colorType: 2
+    - colorType: 4
     - colorType: 2
     cells:
     - position: {x: 0, y: 0}
@@ -28,11 +28,11 @@ MonoBehaviour:
     - position: {x: 0, y: 1}
       gridType: 0
       passengerArea:
-        colorType: 2
+        colorType: 0
     - position: {x: 0, y: 2}
       gridType: 0
       passengerArea:
-        colorType: 2
+        colorType: 0
     - position: {x: 0, y: 3}
       gridType: 0
       passengerArea:
@@ -44,15 +44,15 @@ MonoBehaviour:
     - position: {x: 1, y: 1}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 4
     - position: {x: 1, y: 2}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 4
     - position: {x: 1, y: 3}
       gridType: 0
       passengerArea:
-        colorType: 2
+        colorType: 4
     - position: {x: 2, y: 0}
       gridType: 0
       passengerArea:
@@ -68,7 +68,7 @@ MonoBehaviour:
     - position: {x: 2, y: 3}
       gridType: 0
       passengerArea:
-        colorType: 2
+        colorType: 0
     - position: {x: 3, y: 0}
       gridType: 0
       passengerArea:
@@ -84,4 +84,4 @@ MonoBehaviour:
     - position: {x: 3, y: 3}
       gridType: 0
       passengerArea:
-        colorType: 0
+        colorType: 2

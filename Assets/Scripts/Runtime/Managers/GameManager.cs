@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Runtime.Controllers.Objects;
 using Runtime.Datas.ValueObjects;
 using Runtime.Enums;
 using Runtime.Signals;
@@ -44,16 +45,16 @@ namespace Runtime.Managers
 
         private void SubscribeEvents()
         {
-            CoreGameSignals.OnLevelInitialize += OnLevelInitialize;
-            CoreGameSignals.OnGetCurrentBusColor += OnGetCurrentBusColor;
-            CoreGameSignals.OnUpdateBusColor += OnUpdateBusColor;
-            CoreGameSignals.OnGetCellArea += OnGetCellArea;
-            CoreGameSignals.OnUpdateCellArea += OnUpdateCellArea;
+            CoreGameSignals.Instance.OnLevelInitialize += OnLevelInitialize;
+            CoreGameSignals.Instance.OnGetCurrentBusColor += OnGetCurrentBusColor;
+            CoreGameSignals.Instance.OnUpdateBusColor += UpdateBusColor;
+            CoreGameSignals.Instance.OnGetCellArea += OnGetCellArea;
+            CoreGameSignals.Instance.OnUpdateCellArea += UpdateCellArea;
         }
         
         private void OnLevelInitialize(int levelId)
         {
-            _currentCells = CoreGameSignals.OnGetLevelData(levelId).cells;
+            _currentCells = CoreGameSignals.Instance.OnGetLevelData(levelId).cells;
         }
         
         private ColorTypes OnGetCurrentBusColor()
@@ -61,7 +62,7 @@ namespace Runtime.Managers
             return _currentBusColor;
         }
 
-        private ColorTypes OnUpdateBusColor(BusArea bus)
+        private ColorTypes UpdateBusColor(BusArea bus)
         {
             _currentBusColor = bus.colorType;
             return _currentBusColor;
@@ -72,32 +73,23 @@ namespace Runtime.Managers
             return _currentCells;
         }
         
-        private void OnUpdateCellArea(CellArea cell)
+        private void UpdateCellArea(CellArea cell)
         {
-            //_currentCells.Find(x => x.position == cell.position).passengerArea.colorType = ColorTypes.None;
-            print("Update Cell Area");
             var foundCell = _currentCells.Find(x => x.position == cell.position);
-            if (foundCell == null)
+            if (foundCell?.passengerArea == null)
             {
-                print("No CellArea found with the given position");
-                return;
-            }
-            if (foundCell.passengerArea == null)
-            {
-                print("No PassengerArea found in the CellArea");
                 return;
             }
             foundCell.passengerArea.colorType = ColorTypes.None;
-            print("ColorType is set to None");
         }
         
         private void UnSubscribeEvents()
         {
-            CoreGameSignals.OnLevelInitialize -= OnLevelInitialize;
-            CoreGameSignals.OnGetCurrentBusColor -= OnGetCurrentBusColor;
-            CoreGameSignals.OnUpdateBusColor -= OnUpdateBusColor;
-            CoreGameSignals.OnGetCellArea -= OnGetCellArea;
-            CoreGameSignals.OnUpdateCellArea -= OnUpdateCellArea;
+            CoreGameSignals.Instance.OnLevelInitialize -= OnLevelInitialize;
+            CoreGameSignals.Instance.OnGetCurrentBusColor -= OnGetCurrentBusColor;
+            CoreGameSignals.Instance.OnUpdateBusColor -= UpdateBusColor;
+            CoreGameSignals.Instance.OnGetCellArea -= OnGetCellArea;
+            CoreGameSignals.Instance.OnUpdateCellArea -= UpdateCellArea;
         }
 
         private void OnDisable()

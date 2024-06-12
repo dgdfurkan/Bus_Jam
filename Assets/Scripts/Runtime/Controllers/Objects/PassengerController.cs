@@ -5,13 +5,15 @@ using DG.Tweening;
 using Runtime.Datas.ValueObjects;
 using Runtime.Enums;
 using Runtime.Extentions;
+using Runtime.Interfaces;
 using Runtime.Managers;
 using Runtime.Signals;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Runtime.Controllers.Objects
 {
-    public class PassengerController : MonoBehaviour
+    public class PassengerController : MonoBehaviour, IClickable
     {
         #region Self Variables
 
@@ -33,7 +35,8 @@ namespace Runtime.Controllers.Objects
         private CellArea _cellArea;
         public PassengerArea Data { get; private set; }
         private LevelManager _levelManager;
-        private float _speed = 0.25f;
+        private readonly float _speed = 0.25f;
+        private bool _isMoving = false;
         
         private Tween _firstTween;
         private Tween _secondTween;
@@ -41,7 +44,6 @@ namespace Runtime.Controllers.Objects
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int Sit = Animator.StringToHash("Sit");
         private Quaternion _oldRotation;
-
         
         #endregion
 
@@ -50,7 +52,6 @@ namespace Runtime.Controllers.Objects
         private void Awake()
         {
             _levelManager = FindObjectOfType<LevelManager>();
-            _oldRotation = transform.rotation;
         }
 
         public void Initialize(CellArea area, PassengerArea data)
@@ -58,6 +59,7 @@ namespace Runtime.Controllers.Objects
             _cellArea = area;
             Data = data;
             SetOutline();
+            _oldRotation = transform.rotation;
         }
         
         public void SetOutline()
@@ -70,40 +72,45 @@ namespace Runtime.Controllers.Objects
             SetOutline();
         }
 
-        private void OnMouseDown()
+        public void Click()
         {
-            var busColor = CoreGameSignals.OnGetCurrentBusColor?.Invoke();
+            CoreGameSignals.Instance.OnFirstInputTaken?.Invoke();
             
-            var moveable = PathfindingSignals.OnGetCanMove(_cellArea.position);
-            print(moveable ? true.ToString().ColoredText(Color.green) : false.ToString().ColoredText(Color.red));
+            if(_isMoving) return;
+            
+            var busColor = CoreGameSignals.Instance.OnGetCurrentBusColor?.Invoke();
+            
+            _isMoving = PathfindingSignals.OnGetCanMove(_cellArea.position);
 
-            if (!moveable) return;
-            
             PathfindingSignals.OnGetVector2IntPath.Invoke(_cellArea.position);
-            CoreGameSignals.OnUpdateCellArea?.Invoke(_cellArea);
+            CoreGameSignals.Instance.OnUpdateCellArea?.Invoke(_cellArea);
             
-            print(Data.colorType + "and" + busColor);
             var firstPath = PathfindingSignals.OnGet3DPath.Invoke();
-            
-            print("Saaaa");
-            print(firstPath);
-            print(firstPath.Length);
-
-            //if (firstPath.Length == 0) return;
             
             _firstTween.Kill();
             _firstTween = DoPath(firstPath)
                 .OnComplete(() =>
                 {
-                    if (busColor == Data.colorType)
+                    transform.rotation = _oldRotation;
+                    try
                     {
-                        _secondTween.Kill();
-                        _secondTween = MoveToBus();
+                        outline.enabled = false;
+                        if (busColor == Data.colorType && !_levelManager.buses.Peek().IsFull())
+                        {
+                            _firstTween.Kill();
+                            _firstTween = MoveToBus();
+                        }
+                        else if(busColor != Data.colorType || busColor == Data.colorType && _levelManager.buses.Peek().IsFull())
+                        {
+                            _firstTween.Kill();
+                            _firstTween = MoveToBusStop();
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        _secondTween.Kill();
-                        _secondTween = MoveToBusStop();
+                        Console.WriteLine(e);
+                        print(e);
+                        throw;
                     }
                 });
         }
@@ -124,49 +131,56 @@ namespace Runtime.Controllers.Objects
         
         private Tween MoveToBus()
         {
+            outline.enabled = false;
             var currentBus = _levelManager.buses.Peek();
             if(currentBus == null) return null;
             
-            //DOTween.To(() => animator.GetFloat(Speed), x => animator.SetFloat(Speed, x), 1, .2f);
+            currentBus.IncreasePassengerCount(gameObject);
             var busPosition = currentBus.gameObject.transform.position;
             var targetPosition = new Vector3(busPosition.x, transform.position.y, busPosition.z);
-            return transform.DOMove(targetPosition, _speed * 3)
+            var mesure = Vector3.Distance(targetPosition, transform.position);
+            return transform.DOMove(targetPosition, _speed * mesure)
                 .SetEase(Ease.Linear)
-                .OnStart(()=> transform.DOLookAt(currentBus.gameObject.transform.position, _speed)
                 .OnComplete(() =>
                 {
                     DOTween.To(() => animator.GetFloat(Speed), x => animator.SetFloat(Speed, x), 0, .2f);
-                    currentBus.IncreasePassengerCount();
-                    // TODO: Otobüste üst kata sırayla oturacaklar.
-                    transform.position =new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-                    //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y + 90, transform.rotation.z);
-                    transform.Rotate(0, 90, 0);
+                    currentBus.PlacePassenger();
                     animator.SetTrigger(Sit);
-                }));
+                    DOVirtual.DelayedCall((_speed * mesure) + .5f, () =>
+                    {
+                        currentBus.BusFull();
+                    });
+                });
         }
         
         private Tween MoveToBusStop()
         {
-            var availableBusStop = CoreGameSignals.OnSendAvailableBusStop.Invoke();
-            if(availableBusStop == null) return null;
+            outline.enabled = false;
+            var availableBusStop = CoreGameSignals.Instance.OnSendAvailableBusStop.Invoke();
+            if(!availableBusStop) return null;
             
             availableBusStop.AssignPassenger(this);
             
-            //DOTween.To(() => animator.GetFloat(Speed), x => animator.SetFloat(Speed, x), 1, .2f);
-            return transform.DOMove(availableBusStop.gameObject.transform.position, _speed)
+            var mesure = Vector3.Distance(availableBusStop.gameObject.transform.position, transform.position);
+            return transform.DOMove(availableBusStop.gameObject.transform.position, _speed * mesure)
                 .SetEase(Ease.Linear)
-                .OnStart(()=> transform.DOLookAt(availableBusStop.gameObject.transform.position, _speed)
                 .OnComplete(() =>
                 {
                     transform.rotation = _oldRotation;
                     DOTween.To(() => animator.GetFloat(Speed), x => animator.SetFloat(Speed, x), 0, .2f);
-                }));
+                });
         }
 
         public void MoveBus()
         {
-            _thirdTween.Kill();
-            _thirdTween = MoveToBus();
+            _firstTween.Kill();
+            _firstTween = MoveToBus();
         }
+        
+        public void MoveBusStop()
+        {
+            _firstTween.Kill();
+            _firstTween = MoveToBusStop();
+        } 
     }
 }

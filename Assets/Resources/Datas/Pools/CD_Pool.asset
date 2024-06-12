@@ -41,7 +41,7 @@ MonoBehaviour:
         type: 3}
       type: 0
     - amount: 20
-      prefab: {fileID: 5406226118432775735, guid: c6f13c7e435f02745b79ce4c7a7d7f95,
+      prefab: {fileID: 3967379114914648433, guid: a3c602bd4beb9a2409b5cf200bb656f4,
         type: 3}
       type: 2
     - amount: 150

@@ -86,9 +86,9 @@ namespace Runtime.Commands
             _tiles.Clear();
             _passengers.Clear();
             
-            var width = CoreGameSignals.OnGetLevelData?.Invoke(levelID).gridWidth;
-            var length = CoreGameSignals.OnGetLevelData?.Invoke(levelID).gridWidth;
-            var cellData = CoreGameSignals.OnGetLevelData?.Invoke(levelID).cells;
+            var width = CoreGameSignals.Instance.OnGetLevelData?.Invoke(levelID).gridWidth;
+            var length = CoreGameSignals.Instance.OnGetLevelData?.Invoke(levelID).gridWidth;
+            var cellData = CoreGameSignals.Instance.OnGetLevelData?.Invoke(levelID).cells;
             
             for (var x = 0; x < width; x++)
             {

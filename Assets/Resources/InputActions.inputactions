@@ -6,7 +6,7 @@
             "id": "d9906d96-cf2c-40d2-a19e-d5870d330992",
             "actions": [
                 {
-                    "name": "TouchPress",
+                    "name": "LeftClick",
                     "type": "Button",
                     "id": "9f7dd1fa-3b54-49e6-a291-e331567762b9",
                     "expectedControlType": "Button",
@@ -23,7 +23,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchPress",
+                    "action": "LeftClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -34,7 +34,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchPress",
+                    "action": "LeftClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -14,13 +14,13 @@ namespace Runtime.Controllers
         private LevelData _levelData;
         private List<Vector2Int> _shortestPath;
         private List<Vector3> _3dPathVectors;
-        private static List<CellArea> CurrentCells => CoreGameSignals.OnGetCellArea.Invoke();
+        private static List<CellArea> CurrentCells => CoreGameSignals.Instance.OnGetCellArea.Invoke();
      
         private const float GridSpacing = 0.1f;
         
         private void OnEnable()
         {
-            CoreGameSignals.OnLevelInitialize += OnLevelInitialize;
+            CoreGameSignals.Instance.OnLevelInitialize += OnLevelInitialize;
             PathfindingSignals.OnGetCanMove += CanMoveToTopRow;
             PathfindingSignals.OnGetVector2IntPath += FindPath;
             PathfindingSignals.OnGet3DPath += ConvertPathTo3D;
@@ -28,12 +28,12 @@ namespace Runtime.Controllers
         
         private void OnLevelInitialize(int levelId)
         {
-            _levelData = CoreGameSignals.OnGetLevelData(levelId);
+            _levelData = CoreGameSignals.Instance.OnGetLevelData(levelId);
         }
 
         private void OnDisable()
         {
-            CoreGameSignals.OnLevelInitialize -= OnLevelInitialize;
+            CoreGameSignals.Instance.OnLevelInitialize -= OnLevelInitialize;
             PathfindingSignals.OnGetCanMove -= CanMoveToTopRow;
             PathfindingSignals.OnGetVector2IntPath -= FindPath;
             PathfindingSignals.OnGet3DPath -= ConvertPathTo3D;
@@ -96,7 +96,8 @@ namespace Runtime.Controllers
 
             if (startCell.position.y == 0)
             {
-                return new List<Vector2Int> { startPosition };
+                _shortestPath = new List<Vector2Int> { startPosition };
+                return _shortestPath;
             }
 
             List<Vector2Int> shortestPath = null;
@@ -109,18 +110,15 @@ namespace Runtime.Controllers
                     shortestPath = path;
                 }
             }
-
+            shortestPath ??= new List<Vector2Int>(1);
             _shortestPath = shortestPath;
-            return shortestPath ?? new List<Vector2Int>();
+            return _shortestPath;
         }
         
         [Button("Convert Path To 3D")]
         public Vector3[] ConvertPathTo3D()
         {
             _3dPathVectors = new List<Vector3>();
-
-            print($"_shortestPath.Count : {_shortestPath.Count}");
-            if (_shortestPath.Count == 1) return null;
             
             foreach (var point in _shortestPath)
             {
